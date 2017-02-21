@@ -45,8 +45,6 @@ function init(){
 	stage.update();
 
 	keyInput();
-
-	
 }
 
 // Keys A-Z and ESC
@@ -164,6 +162,7 @@ function keyInput(){
 	});
 }
 
+// Check if input matches next letter
 function checkInput(key){
 		//alert("check" + key);
 		
