@@ -1,27 +1,47 @@
 var stage;
 var mapLetters = ["a", "b", "f"];
 var mapTiming;
-var i;
-
+var i; //iter for checkInput
+var score;
 
 function load(){
-	alert("load");
+	//alert("load");
+
+	//do we need this load function?
+	//or just go straight to init()?
+
 	init();
 }
 
 function init(){
 	stage = new createjs.Stage("canvas");
-	alert("init");
+	//alert("init");
 
+	//init variables
 	i = 0;
+	score = 0;
+
 	//temp test
 	var g = new createjs.Graphics();
 	var letter1 = new createjs.Text(mapLetters[0], "20px Arial", "#000000");
+		letter1.x = 50;
+		letter1.y = 50;
 	var letter2 = new createjs.Text(mapLetters[1], "20px Arial", "#000000");
+		letter2.x = 70;
+		letter2.y = 50;
 	var letter3 = new createjs.Text(mapLetters[2], "20px Arial", "#000000");
+		letter3.x = 90;
+		letter3.y = 50;
+	var scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
+		scoreDisplay.x = 0;
+		scoreDisplay.y = 340;
+	
+	stage.addChild(scoreDisplay);
+	
 	stage.addChild(letter1);
 	stage.addChild(letter2);
 	stage.addChild(letter3);
+
 	stage.update();
 
 	keyInput();
@@ -145,12 +165,16 @@ function keyInput(){
 }
 
 function checkInput(key){
-		alert("check" + key);
-
+		//alert("check" + key);
 		
 		if(key == mapLetters[i]){
-			stage.removeChild(stage.getChildAt(0));
+			stage.removeChild(stage.getChildAt(1));
 			i++;
+
+			//update score
+			//will be based on timing
+			score+=300;
+			stage.getChildAt(0).text=score;
 		}
 
 		stage.update();
