@@ -1,12 +1,10 @@
 var stage;
-var i; //iter for checkInput
-var score;
 var ticks = 0;
+var score = 0;
 var scoreDisplay;
+var secToHit = 2;
 
 function load(){
-	//alert("load");
-
 	//do we need this load function?
 	//or just go straight to init()?
 
@@ -15,32 +13,32 @@ function load(){
 
 function init(){
 	stage = new createjs.Stage("canvas");
-	//alert("init");
     
-    // TICKER
+    // Ticker
     createjs.Ticker.setFPS(60);
     createjs.Ticker.addEventListener("tick",handleTick);
     
-	//init variables
-	i = 0;
-	score = 0;
-
-	//temp test
-	var g = new createjs.Graphics();
-
-	scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
+    // Score
+    scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
 		scoreDisplay.x = 0;
 		scoreDisplay.y = 340;
-	
-    
 	stage.addChild(scoreDisplay);
+
+    var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,30);
+    var circle = new createjs.Shape(g);
+    //stage.addChild(circle);
+    
 	
     //change to for loop
-	stage.addChild(letter1);
-	stage.addChild(letter2);
-	stage.addChild(letter3);
-
-	stage.update();
+    for(var i = 0; i < testMapObjects.length; i++)
+    {
+        var mapObject = testMapObjects[i];
+        stage.addChild(mapObject);
+        var circleClone = circle.clone();
+        circleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
+        circleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
+        stage.addChild(circleClone)
+    }
 
 	keyInput();
 }
@@ -140,6 +138,7 @@ function checkInput(key){
 		
 		if(key == testMapLetters[0]){
 			stage.removeChild(stage.getChildAt(1));
+			stage.removeChild(stage.getChildAt(1));
             
 			//update score
 			//will be based on timing
@@ -153,27 +152,10 @@ function checkInput(key){
 function handleTick(event){
     if(!event.paused){
         ticks += 1;
-        /*if(ticks >= (testMapTiming[0]-2)*60 &&
-        ticks <= (testMapTiming[0]*60)){
-            letter1.visible = true;
-            letter1.alpha += .0075;
-        } else{
-            letter1.visible = false;
-        }*/
-        
-        /*if(ticks >= (testMapTiming[1]-2)*60 &&
-        ticks <= (testMapTiming[1]*60)){
-            letter2.visible = true;
-            letter2.alpha += .0075;
-        } else{
-            letter2.visible = false;
-        }*/
         
         displayLetter();
-        //displayLetter(0);
-        //displayLetter(1);
         
-        scoreDisplay.text = (ticks/60);
+        scoreDisplay.text = (ticks/60); //testing purposes, remove later
         stage.update();
     }
 }
@@ -200,6 +182,8 @@ function displayLetter(){
         } else {
             testMapObjects[j].visible = false;
             if(ticks >= (testMapTiming[j]*60)){
+                stage.removeChild(stage.getChildAt(1));
+                stage.removeChild(stage.getChildAt(1));
                 testMapLetters.shift();
                 testMapTiming.shift();
                 testMapObjects.shift();
