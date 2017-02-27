@@ -3,6 +3,8 @@ var ticks = 0;
 var score = 0;
 var scoreDisplay;
 var secToHit = 2;
+var apprCircle;
+var backCircle;
 
 function load(){
 	//do we need this load function?
@@ -24,20 +26,30 @@ function init(){
 		scoreDisplay.y = 340;
 	stage.addChild(scoreDisplay);
 
-    var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,30);
-    var circle = new createjs.Shape(g);
-    //stage.addChild(circle);
+    var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
+    apprCircle = new createjs.Shape(g);
+    apprCircle.visible = false;
     
-	
-    //change to for loop
+    g = new createjs.Graphics().beginFill("#ff5e5e").drawCircle(0,0,20);
+    backCircle = new createjs.Shape(g);
+    backCircle.visible = false;
+    
+	//adding letters and circles to stage
     for(var i = 0; i < testMapObjects.length; i++)
     {
         var mapObject = testMapObjects[i];
+        
+        var backCircleClone = backCircle.clone();
+        backCircleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
+        backCircleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
+        stage.addChild(backCircleClone);
+        
         stage.addChild(mapObject);
-        var circleClone = circle.clone();
-        circleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
-        circleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
-        stage.addChild(circleClone)
+        
+        var apprCircleClone = apprCircle.clone();
+        apprCircleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
+        apprCircleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
+        stage.addChild(apprCircleClone)
     }
 
 	keyInput();
@@ -136,9 +148,14 @@ function keyInput(){
 function checkInput(key){
 		//alert("check" + key);
 		
-		if(key == testMapLetters[0]){
+		if(key == testMapLetters[0] && ticks >= (testMapTiming[0]-secToHit)*60 &&
+        ticks <= (testMapTiming[0]*60)){
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
+			stage.removeChild(stage.getChildAt(1));
+                testMapLetters.shift();
+                testMapTiming.shift();
+                testMapObjects.shift();
             
 			//update score
 			//will be based on timing
@@ -153,35 +170,33 @@ function handleTick(event){
     if(!event.paused){
         ticks += 1;
         
-        displayLetter();
+        display();
         
         scoreDisplay.text = (ticks/60); //testing purposes, remove later
         stage.update();
     }
 }
 
-/* OLD, less efficient //
-function displayLetter(x){
-    if(ticks >= (testMapTiming[x]-2)*60 &&
-        ticks <= (testMapTiming[x]*60)){
-            testMapObjects[x].visible = true;
-            testMapObjects[x].alpha += .0075;
-        } else{
-            testMapObjects[x].visible = false;
-        }
-}*/
 
 //More efficient
 //Removes letter from arrays after its time is up
-function displayLetter(){
+function display(){
     for(var j = 0; j < testMapLetters.length; j++){
-        if(ticks >= (testMapTiming[j]-2)*60 &&
+        if(ticks >= (testMapTiming[j]-secToHit)*60 &&
         ticks <= (testMapTiming[j]*60)){
-            testMapObjects[j].visible = true;
+            stage.getChildAt((j*3)+1).visible = true; //Background Circle
+            stage.getChildAt((j*3)+2).visible = true; //Letter
+            tempApprCircle = stage.getChildAt((j*3)+3)//Approach Circle
+            tempApprCircle.visible = true;
+            //makes circle approach to enclose back circle
+            tempApprCircle.scaleX -= 0.005952;
+            tempApprCircle.scaleY -= 0.005952;
+            
             testMapObjects[j].alpha += .0075;
         } else {
             testMapObjects[j].visible = false;
             if(ticks >= (testMapTiming[j]*60)){
+                stage.removeChild(stage.getChildAt(1));
                 stage.removeChild(stage.getChildAt(1));
                 stage.removeChild(stage.getChildAt(1));
                 testMapLetters.shift();
