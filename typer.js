@@ -20,6 +20,7 @@ function init() {
     //Sound
     window.onload = function () {
         document.getElementById("metronome").play();
+        document.getElementById("metronome").volume = .5;
     }
 
     // Ticker

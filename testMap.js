@@ -1,5 +1,5 @@
 var testMapLetters = ["t", "y", "p", "e", "r"];
-var testMapTiming = [3, 3.5, 4, 4.5, 5];
+var testMapTiming = [2, 2.5, 3, 3.25, 3.5];
 var letter1 = new createjs.Text(testMapLetters[0], "20px Arial", "#000000");
 		letter1.x = 50;
 		letter1.y = 50;
