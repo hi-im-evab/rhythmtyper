@@ -3,6 +3,7 @@ var ticks = 0;
 var score = 0;
 var scoreDisplay;
 var secToHit = 2;
+var secToLateHit = 1;
 var apprCircle;
 var backCircle;
 
@@ -13,19 +14,25 @@ function load(){
 	init();
 }
 
-function init(){
-	stage = new createjs.Stage("canvas");
-    
+function init() {
+    stage = new createjs.Stage("canvas");
+
+    //Sound
+    window.onload = function () {
+        document.getElementById("metronome").play();
+    }
+
     // Ticker
     createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick",handleTick);
+    createjs.Ticker.addEventListener("tick", handleTick);
     
     // Score
     scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
-		scoreDisplay.x = 0;
-		scoreDisplay.y = 340;
+	scoreDisplay.x = 0;
+	scoreDisplay.y = 340;
 	stage.addChild(scoreDisplay);
 
+    // Circles
     var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
     apprCircle = new createjs.Shape(g);
     apprCircle.visible = false;
@@ -137,7 +144,7 @@ function keyInput(){
 			checkInput("z");
 		}
 		if(event.keyCode == 27){
-			alert("Esc");
+		    checkInput("esc");
 			//no check input
 			//used for pause
 		}
@@ -146,21 +153,37 @@ function keyInput(){
 
 // Check if input matches next letter
 function checkInput(key){
-		//alert("check" + key);
+	//alert("check" + key);
 		
-		if(key == testMapLetters[0] && ticks >= (testMapTiming[0]-secToHit)*60 &&
+    if (key == testMapLetters[0] &&
+        ticks >= (testMapTiming[0] - secToLateHit) * 60 &&
         ticks <= (testMapTiming[0]*60)){
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
-                testMapLetters.shift();
-                testMapTiming.shift();
-                testMapObjects.shift();
+            testMapLetters.shift();
+            testMapTiming.shift();
+            testMapObjects.shift();
             
 			//update score
-			//will be based on timing
-			score+=300;
+        //will be based on timing in ticks
+                if (ticks <= testMapTiming[0] * 60) {
+                    score += 100;
+                } else {
+                    score += 0;
+                    alert("miss");
+                }
+
 			stage.getChildAt(0).text=score;
+		}
+		else if (key == "esc") {
+		    if (createjs.Ticker.paused == false) {
+		        createjs.Ticker.paused = true;
+		        document.getElementById("metronome").pause();
+		    } else {
+		        createjs.Ticker.paused = false;
+		        document.getElementById("metronome").play();
+		    }
 		}
 
 		stage.update();
@@ -169,16 +192,13 @@ function checkInput(key){
 function handleTick(event){
     if(!event.paused){
         ticks += 1;
-        
         display();
         
-        scoreDisplay.text = (ticks/60); //testing purposes, remove later
+        //scoreDisplay.text = (ticks/60); //testing purposes, remove later
         stage.update();
     }
 }
 
-
-//More efficient
 //Removes letter from arrays after its time is up
 function display(){
     for(var j = 0; j < testMapLetters.length; j++){
