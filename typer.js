@@ -1,7 +1,10 @@
 var stage;
+var container; //contains score and progress
 var ticks = 0;
 var score = 0;
+var progress = 100;
 var scoreDisplay;
+var progressDisplay;
 var secToHit = 2;
 var secToLateHit = 1;
 var apprCircle;
@@ -17,6 +20,7 @@ function load(){
 
 function init() {
     stage = new createjs.Stage("canvas");
+	container = new createjs.Container();
 
     //Sound
     window.onload = function () {
@@ -30,10 +34,20 @@ function init() {
     
     // Score
     scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
-	scoreDisplay.x = 0;
-	scoreDisplay.y = 340;
-	stage.addChild(scoreDisplay);
-
+	scoreDisplay.x = 5;
+	scoreDisplay.y = 335;
+	container.addChild(scoreDisplay);
+	
+	
+	//Percentage till completion
+	progressDisplay = new createjs.Text(progress + "%", "20px Arial", "red");
+	progressDisplay.textAlign = "right";
+	progressDisplay.x = 635;
+	progressDisplay.y = 5;
+	container.addChild(progressDisplay);
+	
+	stage.addChild(container);
+	
     // Circles
     var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
     apprCircle = new createjs.Shape(g);
@@ -159,27 +173,39 @@ function checkInput(key){
 		
     if (key == testMapLetters[0] &&
         ticks >= (testMapTiming[0] - secToLateHit) * 60 &&
-        ticks <= (testMapTiming[0]*60)){
+        ticks <= ((testMapTiming[0] + secToLateHit)*60)){
+            
+		//update score
+        //will be based on timing in ticks
+            if (ticks + 60 > (testMapTiming[0]) * 60
+				&& ticks + 40 <= (testMapTiming[0]) * 60) {
+                    score += 50;
+                } else if(ticks + 40 > (testMapTiming[0]) * 60
+				&& ticks + 20 <= (testMapTiming[0]) * 60){
+					score += 100;
+				} else if(ticks + 20 > (testMapTiming[0]) * 60
+				&& ticks <= (testMapTiming[0]) * 60){
+					score += 300;
+				} else if(ticks > (testMapTiming[0]) * 60
+				&& ticks - 10 <= (testMapTiming[0]) * 60){
+					score += 300;
+				} else if(ticks > (testMapTiming[0]) * 60 - 10
+				&& ticks - 20 <= (testMapTiming[0]) * 60){
+					score += 50;
+				}
+				else {
+					//MISS
+                    score += 0;
+                }
+
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
             testMapLetters.shift();
             testMapTiming.shift();
             testMapObjects.shift();
-            
-		//update score
-        //will be based on timing in ticks
-            if (ticks <= testMapTiming[0] * 60 &&
-                ticks > testMapTiming[0] * 80) {
-                    score += 100;
-                } else if(ticks <= testMapTiming[0] * 60) {
-                    score += 200;
-                } else {
-                    score += 0;
-                    //alert("miss");
-                }
-
-			stage.getChildAt(0).text=score;
+				
+			container.getChildAt(0).text=score;
 		}
 		else if (key == "esc") {
 		    if (createjs.Ticker.paused == false) {
@@ -204,9 +230,11 @@ function handleTick(event){
     }
 }
 
+//Late hit attempt
 //Removes letter from arrays after its time is up
 function display(){
-    for(var j = 0; j < testMapLetters.length; j++){
+    for (var j = 0; j < testMapLetters.length; j++) {
+        //Before hit
         if(ticks >= (testMapTiming[j]-secToHit)*60 &&
         ticks <= (testMapTiming[j]*60)){
             stage.getChildAt((j*3)+1).visible = true; //Background Circle
@@ -218,9 +246,21 @@ function display(){
             tempApprCircle.scaleY -= 0.005952;
             
             testMapObjects[j].alpha += .0075;
-        } else {
+
+        //Late hit
+        } else if(ticks > (testMapTiming[j]) * 60 &&
+            ticks <= (testMapTiming[j] + secToLateHit) * 60 - 0){
+            stage.getChildAt((j * 3) + 1).visible = false; //Background Circle
+            stage.getChildAt((j * 3) + 2).visible = false; //Letter
+            tempApprCircle = stage.getChildAt((j * 3) + 3)//Approach Circle
+            tempApprCircle.visible = false;
+        }
+
+        //Miss
+        else if (ticks > (testMapTiming[j] + secToLateHit) * 60 - 0){
+
             testMapObjects[j].visible = false;
-            if(ticks >= (testMapTiming[j]*60)){
+            //if(ticks >= (testMapTiming[j]*60)){
                 stage.removeChild(stage.getChildAt(1));
                 stage.removeChild(stage.getChildAt(1));
                 stage.removeChild(stage.getChildAt(1));
@@ -228,7 +268,7 @@ function display(){
                 testMapTiming.shift();
                 testMapObjects.shift();
                 j--;
-            } 
+            //} 
         }
     }
 }
