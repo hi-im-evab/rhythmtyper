@@ -17,10 +17,10 @@ var letter3 = new createjs.Text(testMapLetters[2], "20px Arial", "#000000");
 var letter4 = new createjs.Text(testMapLetters[3], "20px Arial", "#000000");
 		letter4.x = 140;
 		letter4.y = 50;
-        letter4.visible = true;
+        letter4.visible = false;
 var letter5 = new createjs.Text(testMapLetters[4], "20px Arial", "#000000");
         letter5.x = 170;
         letter5.y = 50;
-        letter5.visible = true;
+        letter5.visible = false;
         
 var testMapObjects = [letter1, letter2, letter3, letter4, letter5];

@@ -7,6 +7,7 @@ var secToLateHit = 1;
 var apprCircle;
 var backCircle;
 
+
 function load(){
 	//do we need this load function?
 	//or just go straight to init()?
@@ -19,8 +20,8 @@ function init() {
 
     //Sound
     window.onload = function () {
-        document.getElementById("metronome").play();
-        document.getElementById("metronome").volume = .5;
+        document.getElementById("mapTrack").play();
+        document.getElementById("mapTrack").volume = .5;
     }
 
     // Ticker
@@ -45,8 +46,8 @@ function init() {
 	//adding letters and circles to stage
     for(var i = 0; i < testMapObjects.length; i++)
     {
+        //mapObject = the letter's displayable object
         var mapObject = testMapObjects[i];
-        
         var backCircleClone = backCircle.clone();
         backCircleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
         backCircleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
@@ -166,13 +167,16 @@ function checkInput(key){
             testMapTiming.shift();
             testMapObjects.shift();
             
-			//update score
+		//update score
         //will be based on timing in ticks
-                if (ticks <= testMapTiming[0] * 60) {
+            if (ticks <= testMapTiming[0] * 60 &&
+                ticks > testMapTiming[0] * 80) {
                     score += 100;
+                } else if(ticks <= testMapTiming[0] * 60) {
+                    score += 200;
                 } else {
                     score += 0;
-                    alert("miss");
+                    //alert("miss");
                 }
 
 			stage.getChildAt(0).text=score;
@@ -180,10 +184,10 @@ function checkInput(key){
 		else if (key == "esc") {
 		    if (createjs.Ticker.paused == false) {
 		        createjs.Ticker.paused = true;
-		        document.getElementById("metronome").pause();
+		        document.getElementById("mapTrack").pause();
 		    } else {
 		        createjs.Ticker.paused = false;
-		        document.getElementById("metronome").play();
+		        document.getElementById("mapTrack").play();
 		    }
 		}
 
@@ -195,7 +199,7 @@ function handleTick(event){
         ticks += 1;
         display();
         
-        //scoreDisplay.text = (ticks/60); //testing purposes, remove later
+        //scoreDisplay.text = (ticks/60); //testing purposes
         stage.update();
     }
 }
@@ -226,6 +230,5 @@ function display(){
                 j--;
             } 
         }
-        
     }
 }
