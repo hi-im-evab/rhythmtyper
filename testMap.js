@@ -7,14 +7,18 @@ var testMapLetters = ["t", "y", "p", "e", "r",
 						"e", "v", "a", "n", "e", "v", "a", "n",
 						"a", "p", "p", "l", "e",
 						"m", "u", "s", "i", "c",
-						"s", "w", "e", "a", "t", "e", "r", "s"];
+						"s", "w", "e", "a", "t", "e", "r", "s",
+						"y", "o", "t", "h", "a", "n", "k", "y", "o", "u",
+						"q"];
 var testMapTiming = [2, 2.5, 3, 3.25, 3.5, 
 						4, 4.5, 5, 5.5,
 						6, 6.5, 7, 7.25, 7.5,
 						8, 8.25, 8.5, 8.75, 9, 9.25, 9.5, 9.75,
 						10, 10.5, 11, 11.25, 11.5,
 						12, 12.5, 13, 13.25, 13.5,
-						14, 14.25, 14.5, 14.75, 15, 15.25, 15.5, 15.75]; //appears two seconds before given second
+						14, 14.25, 14.5, 14.75, 15, 15.25, 15.5, 15.75,
+						16, 16.25, 16.5, 16.75, 17, 17.25, 17.5, 17.625, 17.75, 17.875,
+						18]; //appears two seconds before given second
 /* Measure 1 */ //1 2 3 and 4 //typer
 var letter1 = new createjs.Text(testMapLetters[0], "20px Arial", "#000000");
 		letter1.x = 50; letter1.y = 50; letter1.alpha = .1; letter1.visible = false;
@@ -91,7 +95,7 @@ var letter31 = new createjs.Text(testMapLetters[30], "20px Arial", "#000000");
 var letter32 = new createjs.Text(testMapLetters[31], "20px Arial", "#000000");
 		letter32.x = 200; letter32.y = 160; letter32.alpha = .1; letter32.visible = false;
 		
-/* Measure 7 */ //sweaters
+/* Measure 7 */ //1 and 2 and 3 and 4 //sweaters
 var letter33 = new createjs.Text(testMapLetters[32], "20px Arial", "#000000");
 		letter33.x = 290; letter33.y = 210; letter33.alpha = .1; letter33.visible = false;
 var letter34 = new createjs.Text(testMapLetters[33], "20px Arial", "#000000");
@@ -109,26 +113,43 @@ var letter39 = new createjs.Text(testMapLetters[38], "20px Arial", "#000000");
 var letter40 = new createjs.Text(testMapLetters[39], "20px Arial", "#000000");
 		letter40.x = 500; letter40.y = 210; letter40.alpha = .1; letter40.visible = false;
 
-/* Measure 8 */
-
-/* Measure 9 */
-
-/* Measure 10 */
-
-/* Measure 11 */
-
-/* Measure 12 */
-
-/* Measure 13 */
-
-/* Measure 14 */
-
-/* Measure 15 */
 		
+/* Measure 8 */	//1 and 2 and 3 and 4 e-and-a	
+var letter41 = new createjs.Text(testMapLetters[40], "20px Arial", "#000000");
+		letter41.x = 40; letter41.y = 40; letter41.alpha = .1; letter41.visible = false;
+var letter42 = new createjs.Text(testMapLetters[41], "20px Arial", "#000000");
+		letter42.x = 70; letter42.y = 70; letter42.alpha = .1; letter42.visible = false;
+var letter43 = new createjs.Text(testMapLetters[42], "20px Arial", "#000000");
+		letter43.x = 100; letter43.y = 100; letter43.alpha = .1; letter43.visible = false;
+var letter44 = new createjs.Text(testMapLetters[43], "20px Arial", "#000000");
+		letter44.x = 130; letter44.y = 130; letter44.alpha = .1; letter44.visible = false;
+var letter45 = new createjs.Text(testMapLetters[44], "20px Arial", "#000000");
+		letter45.x = 160; letter45.y = 160; letter45.alpha = .1; letter45.visible = false;
+var letter46 = new createjs.Text(testMapLetters[45], "20px Arial", "#000000");
+		letter46.x = 190; letter46.y = 190; letter46.alpha = .1; letter46.visible = false;
+var letter47 = new createjs.Text(testMapLetters[46], "20px Arial", "#000000");
+		letter47.x = 220; letter47.y = 220; letter47.alpha = .1; letter47.visible = false;
+var letter48 = new createjs.Text(testMapLetters[47], "20px Arial", "#000000");
+		letter48.x = 250; letter48.y = 250; letter48.alpha = .1; letter48.visible = false;
+var letter49 = new createjs.Text(testMapLetters[48], "20px Arial", "#000000");
+		letter49.x = 280; letter49.y = 280; letter49.alpha = .1; letter49.visible = false;
+var letter50 = new createjs.Text(testMapLetters[49], "20px Arial", "#000000");
+		letter50.x = 310; letter50.y = 310; letter50.alpha = .1; letter50.visible = false;
+
+//LAST LETTER First beat of Measure 9
+var letter51 = new createjs.Text(testMapLetters[50], "20px Arial", "#000000");
+		letter51.x = 350; letter51.y = 310; letter51.alpha = .1; letter51.visible = false;
+
+/*
+/* Map only covers first 8 measures
+*/
+
 var testMapObjects = [letter1, letter2, letter3, letter4, letter5, 
 						letter6, letter7, letter8, letter9,
 						letter10, letter11, letter12, letter13, letter14,
 						letter15, letter16, letter17, letter18, letter19, letter20, letter21, letter22,
 						letter23, letter24, letter25, letter26, letter27,
 						letter28, letter29, letter30, letter31, letter32,
-						letter33, letter34, letter35, letter36, letter37, letter38, letter39, letter40];
+						letter33, letter34, letter35, letter36, letter37, letter38, letter39, letter40,
+						letter41, letter42, letter43, letter44, letter45, letter46, letter47, letter48, letter49, letter50,
+						letter51];
