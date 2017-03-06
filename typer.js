@@ -11,7 +11,7 @@ var progressDisplay;
 
 //Timing
 var secToHit = 2;
-var secToLateHit = 1;
+var secToLateHit = 0.25;
 
 //Circles
 var apprCircle;
@@ -186,47 +186,40 @@ function keyInput(){
 
 // Check if input matches next letter
 function checkInput(key){
-    if (key == testMapLetters[0] &&
-        ticks >= (testMapTiming[0] - secToLateHit) * 60 &&
-        ticks <= ((testMapTiming[0] + secToLateHit)*60)){
-            
+    for(var y = 0; y < 3; y++){
+    if (key == testMapLetters[y]){
+            var doBreak = false;
 		//update score
         //will be based on timing in ticks
-            if (ticks + 60 > (testMapTiming[0]) * 60
-				&& ticks + 40 <= (testMapTiming[0]) * 60) {
+            if (ticks + 60 > (testMapTiming[y]) * 60
+				&& ticks + 35 <= (testMapTiming[y]) * 60) {
                     score += 50;
-                } else if(ticks + 40 > (testMapTiming[0]) * 60
-				&& ticks + 20 <= (testMapTiming[0]) * 60){
+                    removeLetter(y);
+                    doBreak = true;
+                } else if(ticks + 35 > (testMapTiming[y]) * 60
+				&& ticks + 10 <= (testMapTiming[y]) * 60){
 					score += 100;
-				} else if(ticks + 20 > (testMapTiming[0]) * 60
-				&& ticks <= (testMapTiming[0]) * 60){
+                    removeLetter(y);
+                    doBreak = true;
+				} else if(ticks + 10 > (testMapTiming[y]) * 60
+				&& ticks - 5 <= (testMapTiming[y]) * 60){
 					score += 300;
-				} else if(ticks > (testMapTiming[0]) * 60
-				&& ticks - 10 <= (testMapTiming[0]) * 60){
-					score += 300;
-				} else if(ticks > (testMapTiming[0]) * 60 - 10
-				&& ticks - 20 <= (testMapTiming[0]) * 60){
+                    removeLetter(y);
+                    doBreak = true;
+				} else if(ticks > (testMapTiming[y]) * 60 - 5
+				&& ticks - 20 <= (testMapTiming[y]) * 60){
 					score += 50;
+                    removeLetter(y);
+                    doBreak = true;
 				}
-				else {
-					//MISS
-                    score += 0;
-                }
-			
 			
 			//Explode behind circle
-			explodeOnHit.x = testMapObjects[0].x - 20;
-			explodeOnHit.y = testMapObjects[0].y - 20;
-			container.addChild(explodeOnHit);
-			
-			stage.removeChild(stage.getChildAt(1));
-			stage.removeChild(stage.getChildAt(1));
-			stage.removeChild(stage.getChildAt(1));
-            testMapLetters.shift();
-            testMapTiming.shift();
-            testMapObjects.shift();
-				
+			//container.addChild(explodeOnHit);
+            
 			container.getChildAt(0).text=score;
+            if(doBreak){
+                break;
+            }
 		}
 		else if (key == "esc") {
 			var audio = document.getElementById("mapTrack");
@@ -245,6 +238,7 @@ function checkInput(key){
 		}
 
 		stage.update();
+    }
 }
 
 function handleTick(event){
@@ -264,9 +258,10 @@ function handleTick(event){
 
 //Removes letter from arrays after its time is up
 function display(){
-    for (var j = 0; j < testMapLetters.length; j++) {
+    var originalLetters = testMapLetters.length;
+    for (var j = 0; j < originalLetters; j++) {
         //Before hit
-        if(ticks >= (testMapTiming[j]-secToHit)*60 &&
+        if(ticks >= ((testMapTiming[j]-secToHit)*60) &&
         ticks <= (testMapTiming[j]*60)){
             stage.getChildAt((j*3)+1).visible = true; //Background Circle
             stage.getChildAt((j*3)+2).visible = true; //Letter
@@ -277,9 +272,10 @@ function display(){
             tempApprCircle.scaleY -= 0.005952;
 
             testMapObjects[j].alpha += .0075;
-			
+    //alert(testMapLetters[0] + ", " + testMapTiming[0] + ", " + ticks/60);
         //Late hit
-        } else if(ticks > (testMapTiming[j]) * 60 &&
+        }
+        else if(ticks >= (testMapTiming[j]) * 60 &&
             ticks <= (testMapTiming[j] + secToLateHit) * 60 - 0){
             stage.getChildAt((j * 3) + 1).visible = false; //Background Circle
             stage.getChildAt((j * 3) + 2).visible = false; //Letter
@@ -288,15 +284,27 @@ function display(){
         }
 
         //Miss
-        else if (ticks > (testMapTiming[j] + secToLateHit) * 60 - 0){
-            testMapObjects[j].visible = false;
-                stage.removeChild(stage.getChildAt(1));
-                stage.removeChild(stage.getChildAt(1));
-                stage.removeChild(stage.getChildAt(1));
-                testMapLetters.shift();
-                testMapTiming.shift();
-                testMapObjects.shift();
-                j--;
+        else if (ticks >= (testMapTiming[j] + secToLateHit) * 60 - 0){
+            //testMapObjects[j].visible = false;
+            removeLetter(j);
+            j--;
+            originalLetters--;
         }
     }
+}
+
+function removeLetter(index){
+    
+    //alert(testMapLetters[index] + ", " + testMapTiming[index] + ", " + ticks/60);
+			//explodeOnHit.x = testMapObjects[index].x - 20;
+			//explodeOnHit.y = testMapObjects[index].y - 20;
+            //stage.getChildAt(index + 1).visible = false; //Background Circle
+            //stage.getChildAt(index  + 2).visible = false; //Letter
+            //stage.getChildAt(index + 3).visible = false;//Approach Circle
+                stage.removeChild(stage.getChildAt(index * 3 + 1));
+                stage.removeChild(stage.getChildAt(index * 3 + 1));
+                stage.removeChild(stage.getChildAt(index * 3 + 1));
+                testMapLetters.splice(index, 1);
+                testMapTiming.splice(index, 1);
+                testMapObjects.splice(index, 1);
 }
