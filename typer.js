@@ -1,15 +1,33 @@
+
 var stage;
-var container; //contains score and progress
+var container; //contains score, progress, and EXPLOSIONS
 var ticks = 0;
+
+//Score and Progress
 var score = 0;
-var progress = 100;
+var progress = 0;
 var scoreDisplay;
 var progressDisplay;
+
+//Timing
 var secToHit = 2;
 var secToLateHit = 1;
+
+//Circles
 var apprCircle;
 var backCircle;
 
+//EXPLOSION data
+explosion = {
+		images:["assets/explosion.png"],
+		frames:{width:64, height:64, count: 25},
+		animations:{
+			explode:[0,25]
+		}
+	};
+var explosionSheet = new createjs.SpriteSheet(explosion);
+var explodeOnHit = new createjs.Sprite(explosionSheet, "explode");
+explodeOnHit.alpha = .5;
 
 function load(){
 	//do we need this load function?
@@ -38,14 +56,13 @@ function init() {
 	scoreDisplay.y = 335;
 	container.addChild(scoreDisplay);
 	
-	
 	//Percentage till completion
-	progressDisplay = new createjs.Text(progress + "%", "20px Arial", "red");
+	progressDisplay = new createjs.Text("Progress:" + progress + "%", "16px Arial", "red");
 	progressDisplay.textAlign = "right";
 	progressDisplay.x = 635;
 	progressDisplay.y = 5;
 	container.addChild(progressDisplay);
-	
+
 	stage.addChild(container);
 	
     // Circles
@@ -169,8 +186,6 @@ function keyInput(){
 
 // Check if input matches next letter
 function checkInput(key){
-	//alert("check" + key);
-		
     if (key == testMapLetters[0] &&
         ticks >= (testMapTiming[0] - secToLateHit) * 60 &&
         ticks <= ((testMapTiming[0] + secToLateHit)*60)){
@@ -197,7 +212,13 @@ function checkInput(key){
 					//MISS
                     score += 0;
                 }
-
+			
+			
+			//Explode behind circle
+			explodeOnHit.x = testMapObjects[0].x - 20;
+			explodeOnHit.y = testMapObjects[0].y - 20;
+			container.addChild(explodeOnHit);
+			
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
 			stage.removeChild(stage.getChildAt(1));
@@ -208,11 +229,17 @@ function checkInput(key){
 			container.getChildAt(0).text=score;
 		}
 		else if (key == "esc") {
+			var audio = document.getElementById("mapTrack");
+			var timeAtPause = audio.currentTime;
+			var progressAtPause = container.getChildAt(1).text;
 		    if (createjs.Ticker.paused == false) {
 		        createjs.Ticker.paused = true;
-		        document.getElementById("mapTrack").pause();
+				container.getChildAt(1).text = "Paused";
+		        audio.pause();
 		    } else {
 		        createjs.Ticker.paused = false;
+				audio.currentTime = timeAtPause;
+				container.getChildAt(1).text = progressAtPause;
 		        document.getElementById("mapTrack").play();
 		    }
 		}
@@ -223,14 +250,18 @@ function checkInput(key){
 function handleTick(event){
     if(!event.paused){
         ticks += 1;
+		var songDuration = document.getElementById("mapTrack").duration * 60; //Duration in ticks
+		if(ticks < songDuration){
+			container.getChildAt(1).text = "Progress: " + ((ticks / songDuration) * 100).toFixed(1) + "%";
+		} else{
+			container.getChildAt(1).text = "Progress: 100%";
+		}
+		
         display();
-        
-        //scoreDisplay.text = (ticks/60); //testing purposes
         stage.update();
     }
 }
 
-//Late hit attempt
 //Removes letter from arrays after its time is up
 function display(){
     for (var j = 0; j < testMapLetters.length; j++) {
@@ -244,9 +275,9 @@ function display(){
             //makes circle approach to enclose back circle
             tempApprCircle.scaleX -= 0.005952;
             tempApprCircle.scaleY -= 0.005952;
-            
-            testMapObjects[j].alpha += .0075;
 
+            testMapObjects[j].alpha += .0075;
+			
         //Late hit
         } else if(ticks > (testMapTiming[j]) * 60 &&
             ticks <= (testMapTiming[j] + secToLateHit) * 60 - 0){
@@ -258,9 +289,7 @@ function display(){
 
         //Miss
         else if (ticks > (testMapTiming[j] + secToLateHit) * 60 - 0){
-
             testMapObjects[j].visible = false;
-            //if(ticks >= (testMapTiming[j]*60)){
                 stage.removeChild(stage.getChildAt(1));
                 stage.removeChild(stage.getChildAt(1));
                 stage.removeChild(stage.getChildAt(1));
@@ -268,7 +297,6 @@ function display(){
                 testMapTiming.shift();
                 testMapObjects.shift();
                 j--;
-            //} 
         }
     }
 }
