@@ -8,8 +8,6 @@ var score = 0;
 var progress = 0;
 var scoreDisplay;
 var progressDisplay;
-var maxScore = (51 * 300);
-var accuracyDisplay;
 
 //Timing
 var secToHit = 2;
@@ -20,15 +18,17 @@ var apprCircle;
 var backCircle;
 
 //EXPLOSION data
-var explosion = {
-    framerate: 60,
-    images:["assets/explosion.png"],
-	frames:{width:64, height:64, count: 25},
-	animations:{
-		explode: [0, 24, 25, 0.5]
-    }
-}
+explosion = {
+		images:["assets/explosion.png"],
+		frames:{width:64, height:64, count: 25},
+		animations:{
+			explode:[0,25]
+		}
+	};
 var explosionSheet = new createjs.SpriteSheet(explosion);
+var explodeOnHit = new createjs.Sprite(explosionSheet, "explode");
+explodeOnHit.alpha = .5;
+
 function load(){
 	//do we need this load function?
 	//or just go straight to init()?
@@ -51,7 +51,7 @@ function init() {
     createjs.Ticker.addEventListener("tick", handleTick);
     
     // Score
-    scoreDisplay = new createjs.Text("Score: " + score, "20px Arial", "#000000");
+    scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
 	scoreDisplay.x = 5;
 	scoreDisplay.y = 335;
 	container.addChild(scoreDisplay);
@@ -63,14 +63,7 @@ function init() {
 	progressDisplay.y = 5;
 	container.addChild(progressDisplay);
 
-    //Accuracy
-    accuracyDisplay = new createjs.Text("Accuracy: 0%", "16px Arial", "red");
-	accuracyDisplay.textAlign = "right";
-	accuracyDisplay.x = 635;
-	accuracyDisplay.y = 25;
-    container.addChild(accuracyDisplay);
-    
-    stage.addChild(container);
+	stage.addChild(container);
 	
     // Circles
     var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
@@ -201,25 +194,21 @@ function checkInput(key){
             if (ticks + 60 > (testMapTiming[y]) * 60
 				&& ticks + 35 <= (testMapTiming[y]) * 60) {
                     score += 50;
-                    explode(y);
                     removeLetter(y);
                     doBreak = true;
                 } else if(ticks + 35 > (testMapTiming[y]) * 60
 				&& ticks + 10 <= (testMapTiming[y]) * 60){
 					score += 100;
-                    explode(y);
                     removeLetter(y);
                     doBreak = true;
 				} else if(ticks + 10 > (testMapTiming[y]) * 60
 				&& ticks - 5 <= (testMapTiming[y]) * 60){
 					score += 300;
-                    explode(y);
                     removeLetter(y);
                     doBreak = true;
 				} else if(ticks > (testMapTiming[y]) * 60 - 5
 				&& ticks - 20 <= (testMapTiming[y]) * 60){
 					score += 50;
-                    explode(y);
                     removeLetter(y);
                     doBreak = true;
 				}
@@ -227,7 +216,7 @@ function checkInput(key){
 			//Explode behind circle
 			//container.addChild(explodeOnHit);
             
-			container.getChildAt(0).text="Score: " + score;
+			container.getChildAt(0).text=score;
             if(doBreak){
                 break;
             }
@@ -256,12 +245,12 @@ function handleTick(event){
     if(!event.paused){
         ticks += 1;
 		var songDuration = document.getElementById("mapTrack").duration * 60; //Duration in ticks
-		if(ticks < songDuration / 2){
-			container.getChildAt(1).text = "Progress: " + ((ticks / songDuration) * 100 * 2).toFixed(1) + "%";
+		if(ticks < songDuration){
+			container.getChildAt(1).text = "Progress: " + ((ticks / songDuration) * 100).toFixed(1) + "%";
 		} else{
 			container.getChildAt(1).text = "Progress: 100%";
 		}
-		container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100 * 2).toFixed(2) + "%");
+		
         display();
         stage.update();
     }
@@ -276,9 +265,8 @@ function display(){
         ticks <= (testMapTiming[j]*60)){
             stage.getChildAt((j*3)+1).visible = true; //Background Circle
             stage.getChildAt((j*3)+2).visible = true; //Letter
-            tempApprCircle = stage.getChildAt((j*3)+3);//Approach Circle
+            tempApprCircle = stage.getChildAt((j*3)+3)//Approach Circle
             tempApprCircle.visible = true;
-            tempApprCircle.alpha = 0.5;
             //makes circle approach to enclose back circle
             tempApprCircle.scaleX -= 0.005952;
             tempApprCircle.scaleY -= 0.005952;
@@ -319,14 +307,4 @@ function removeLetter(index){
                 testMapLetters.splice(index, 1);
                 testMapTiming.splice(index, 1);
                 testMapObjects.splice(index, 1);
-                maxScore += 300;
-}
-
-function explode(index){
-    var explodeOnHit = new createjs.Sprite(explosionSheet, explode);
-    explodeOnHit.alpha = .5;
-    explodeOnHit.x = testMapObjects[index].x - 20;
-    explodeOnHit.y = testMapObjects[index].y - 20;
-    container.addChild(explodeOnHit);
-    setTimeout(function(){container.removeChild(explodeOnHit);}, 416);
 }
