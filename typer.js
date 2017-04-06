@@ -1,69 +1,105 @@
 
 var stage;
 var container; //contains score, progress, and EXPLOSIONS
-var ticks = 0;
+var ticks;
+
 
 //Score and Progress
-var score = 0;
-var progress = 0;
+var score;
+var progress;
 var scoreDisplay;
 var progressDisplay;
+var maxScore;
+var accuracyDisplay;
+var multDisplay;
+var highScore = 0;
+var multiplier;
+var currentIndex;
+var graded;
 
 //Timing
-var secToHit = 2;
-var secToLateHit = 0.25;
+var secToHit;
+var secToLateHit;
 
 //Circles
 var apprCircle;
 var backCircle;
+var color;
+var colors = [new createjs.ColorFilter(0,0,0,1,0,255,0, 0), new createjs.ColorFilter(0,0,0,1,255,0,0, 0), new createjs.ColorFilter(0,0,0,1,0,0,255, 0)];
+var colorIt = 0;
 
 //EXPLOSION data
-explosion = {
-		images:["assets/explosion.png"],
-		frames:{width:64, height:64, count: 25},
-		animations:{
-			explode:[0,25]
-		}
-	};
+var explosion = {
+    framerate: 60,
+    images:["assets/explosion.png"],
+	frames:{width:64, height:64, count: 25},
+	animations:{
+		explode: [0, 24, 25, 0.5]
+    }
+}
 var explosionSheet = new createjs.SpriteSheet(explosion);
-var explodeOnHit = new createjs.Sprite(explosionSheet, "explode");
-explodeOnHit.alpha = .5;
 
-function load(){
-	//do we need this load function?
-	//or just go straight to init()?
-
+function load() {
 	init();
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick", handleTick);
 }
 
 function init() {
+    currentIndex = 0;
+    score = 0;
+    maxScore = 0;
+    progress = 0;
+    secToHit = 2;
+    secToLateHit = 0.25;
+    ticks = 0;
+    multiplier = 1;
+	graded = true;
+
     stage = new createjs.Stage("canvas");
-	container = new createjs.Container();
+    container = new createjs.Container();
 
     //Sound
-    window.onload = function () {
-        document.getElementById("mapTrack").play();
-        document.getElementById("mapTrack").volume = .5;
-    }
+	document.getElementById("mapTrack").load();
+    document.getElementById("mapTrack").play();
+    document.getElementById("mapTrack").volume = .5;
 
     // Ticker
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", handleTick);
     
     // Score
-    scoreDisplay = new createjs.Text(score, "20px Arial", "#000000");
+    scoreDisplay = new createjs.Text("Score: " + score, "20px Arial", "#000000");
 	scoreDisplay.x = 5;
 	scoreDisplay.y = 335;
-	container.addChild(scoreDisplay);
+	container.addChildAt(scoreDisplay, 0);
 	
 	//Percentage till completion
 	progressDisplay = new createjs.Text("Progress:" + progress + "%", "16px Arial", "red");
 	progressDisplay.textAlign = "right";
 	progressDisplay.x = 635;
 	progressDisplay.y = 5;
-	container.addChild(progressDisplay);
+	container.addChildAt(progressDisplay, 1);
 
-	stage.addChild(container);
+    //Accuracy
+    accuracyDisplay = new createjs.Text("Accuracy: 0%", "16px Arial", "red");
+	accuracyDisplay.textAlign = "right";
+	accuracyDisplay.x = 635;
+	accuracyDisplay.y = 25;
+	container.addChildAt(accuracyDisplay, 2);
+
+    //High Score
+	highScoreDisplay = new createjs.Text("High Score: " + highScore.toFixed(0), "20px Arial", "#000000");
+	highScoreDisplay.x = 225;
+	highScoreDisplay.y = 335;
+	container.addChildAt(highScoreDisplay, 3);
+
+    //multiplier
+	multDisplay = new createjs.Text("Multiplier: " + multiplier.toFixed(1), "20px Arial", "#000000");
+	multDisplay.textAlign = "right";
+	multDisplay.x = 600;
+	multDisplay.y = 335;
+	container.addChildAt(multDisplay, 4);
+    
+    stage.addChild(container);
 	
     // Circles
     var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
@@ -82,6 +118,7 @@ function init() {
         var backCircleClone = backCircle.clone();
         backCircleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
         backCircleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
+		backCircleClone.cache(-22, -22,  44, 44);
         stage.addChild(backCircleClone);
         
         stage.addChild(mapObject);
@@ -89,9 +126,11 @@ function init() {
         var apprCircleClone = apprCircle.clone();
         apprCircleClone.x = mapObject.x + mapObject.getMeasuredWidth()/2;
         apprCircleClone.y = mapObject.y + mapObject.getMeasuredHeight()/2;
+		apprCircleClone.cache(-72, -72,  144, 144);
         stage.addChild(apprCircleClone)
     }
 
+	graded = false;
 	keyInput();
 }
 
@@ -193,30 +232,45 @@ function checkInput(key){
         //will be based on timing in ticks
             if (ticks + 60 > (testMapTiming[y]) * 60
 				&& ticks + 35 <= (testMapTiming[y]) * 60) {
-                    score += 50;
+                    score += 50 * multiplier;
+                    multiplier += 0.1;
+					maxScore += 300 * (1 + 0.1 * currentIndex);
+					currentIndex += 1;
+                    explode(y);
                     removeLetter(y);
                     doBreak = true;
                 } else if(ticks + 35 > (testMapTiming[y]) * 60
 				&& ticks + 10 <= (testMapTiming[y]) * 60){
-					score += 100;
+                    score += 100 * multiplier;
+                    multiplier += 0.1;
+					maxScore += 300 * (1 + 0.1 * currentIndex);
+					currentIndex += 1;
+                    explode(y);
                     removeLetter(y);
                     doBreak = true;
 				} else if(ticks + 10 > (testMapTiming[y]) * 60
 				&& ticks - 5 <= (testMapTiming[y]) * 60){
-					score += 300;
+				    score += 300 * multiplier;
+				    multiplier += 0.1;
+					maxScore += 300 * (1 + 0.1 * currentIndex);
+					currentIndex += 1;
+                    explode(y);
                     removeLetter(y);
                     doBreak = true;
 				} else if(ticks > (testMapTiming[y]) * 60 - 5
 				&& ticks - 20 <= (testMapTiming[y]) * 60){
-					score += 50;
+				    score += 50 * multiplier;
+				    multiplier += 0.1;
+					maxScore += 300 * (1 + 0.1 * currentIndex);
+					currentIndex += 1;
+                    explode(y);
                     removeLetter(y);
                     doBreak = true;
 				}
-			
-			//Explode behind circle
-			//container.addChild(explodeOnHit);
-            
-			container.getChildAt(0).text=score;
+
+			container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
+            container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
+			container.getChildAt(0).text="Score: " + score.toFixed(0);
             if(doBreak){
                 break;
             }
@@ -231,9 +285,8 @@ function checkInput(key){
 		        audio.pause();
 		    } else {
 		        createjs.Ticker.paused = false;
-				audio.currentTime = timeAtPause;
+		        audio.play();
 				container.getChildAt(1).text = progressAtPause;
-		        document.getElementById("mapTrack").play();
 		    }
 		}
 
@@ -245,36 +298,82 @@ function handleTick(event){
     if(!event.paused){
         ticks += 1;
 		var songDuration = document.getElementById("mapTrack").duration * 60; //Duration in ticks
-		if(ticks < songDuration){
-			container.getChildAt(1).text = "Progress: " + ((ticks / songDuration) * 100).toFixed(1) + "%";
+		if(ticks < songDuration / 2){
+			container.getChildAt(1).text = "Progress: " + ((ticks / songDuration) * 100 * 2).toFixed(1) + "%";
 		} else{
 			container.getChildAt(1).text = "Progress: 100%";
+			if(!graded){
+				graded = true;
+				var percent = (score/maxScore * 100).toFixed(0);
+				if(percent >= 100){
+					alert("You recieved a grade of S for hitting PERFECT on EVERY LETTER!!!!!!!!!!");
+				}
+				else if(percent >= 90){
+					alert("You recieved a grade of A for getting at least 90% of the points!");
+				}
+				else if(percent >= 80){
+					alert("You recieved a grade of B for getting at least 80% of the points!");
+				}
+				else if(percent >= 70){
+					alert("You recieved a grade of C for getting at least 70% of the points!");
+				}
+				else if(percent >= 60){
+					alert("You recieved a grade of D for getting at least 60% of the points!");
+				}
+				else if(percent <= 60){
+					alert("You recieved a grade of F and failed for getting less than 60% of the points.");
+				}
+			}
 		}
-		
-        display();
+		display();
+		if (score > highScore) {
+		    highScore = score;
+		    container.getChildAt(3).text = ("High Score: " + highScore.toFixed(0));
+		}
         stage.update();
     }
 }
 
 //Removes letter from arrays after its time is up
 function display(){
-    var originalLetters = testMapLetters.length;
-    for (var j = 0; j < originalLetters; j++) {
+    var originalLettersLength = testMapLetters.length;
+    for (var j = 0; j < originalLettersLength; j++) {
         //Before hit
         if(ticks >= ((testMapTiming[j]-secToHit)*60) &&
         ticks <= (testMapTiming[j]*60)){
-            stage.getChildAt((j*3)+1).visible = true; //Background Circle
             stage.getChildAt((j*3)+2).visible = true; //Letter
-            tempApprCircle = stage.getChildAt((j*3)+3)//Approach Circle
+			
+            var tempBackCircle =stage.getChildAt((j*3)+1); //Background Circle
+            tempBackCircle.visible = true;
+			
+            var tempApprCircle = stage.getChildAt((j*3)+3);//Approach Circle
             tempApprCircle.visible = true;
+            tempApprCircle.alpha = 0.5;
+			if(color == true && colorIt >= 10){
+				tempBackCircle.filters = [colors[0]];
+				tempBackCircle.updateCache();
+				tempApprCircle.filters = [colors[0]];
+				tempApprCircle.updateCache();
+				colors.push(colors.shift());
+				colorIt = 0;
+			}
+			else if(color == false){
+				tempBackCircle.filters = [new createjs.ColorFilter(0,0,0,1,255,94,94, 0)];
+				tempApprCircle.filters = [new createjs.ColorFilter(0,0,0,1,255,0,0, 0)];
+				tempBackCircle.updateCache();
+				tempApprCircle.updateCache();
+			}
+			else{
+				colorIt++;
+			}
             //makes circle approach to enclose back circle
             tempApprCircle.scaleX -= 0.005952;
             tempApprCircle.scaleY -= 0.005952;
 
             testMapObjects[j].alpha += .0075;
-    //alert(testMapLetters[0] + ", " + testMapTiming[0] + ", " + ticks/60);
-        //Late hit
-        }
+			
+		}
+		//making not visible at end of its time
         else if(ticks >= (testMapTiming[j]) * 60 &&
             ticks <= (testMapTiming[j] + secToLateHit) * 60 - 0){
             stage.getChildAt((j * 3) + 1).visible = false; //Background Circle
@@ -285,26 +384,59 @@ function display(){
 
         //Miss
         else if (ticks >= (testMapTiming[j] + secToLateHit) * 60 - 0){
-            //testMapObjects[j].visible = false;
             removeLetter(j);
+            multiplier = 1;
+			maxScore += 300 * (1 + 0.1 * currentIndex);
+			currentIndex += 1;
+            container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
+			container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
             j--;
-            originalLetters--;
+            originalLettersLength--;
         }
     }
 }
 
 function removeLetter(index){
-    
-    //alert(testMapLetters[index] + ", " + testMapTiming[index] + ", " + ticks/60);
-			//explodeOnHit.x = testMapObjects[index].x - 20;
-			//explodeOnHit.y = testMapObjects[index].y - 20;
-            //stage.getChildAt(index + 1).visible = false; //Background Circle
-            //stage.getChildAt(index  + 2).visible = false; //Letter
-            //stage.getChildAt(index + 3).visible = false;//Approach Circle
-                stage.removeChild(stage.getChildAt(index * 3 + 1));
-                stage.removeChild(stage.getChildAt(index * 3 + 1));
-                stage.removeChild(stage.getChildAt(index * 3 + 1));
-                testMapLetters.splice(index, 1);
-                testMapTiming.splice(index, 1);
-                testMapObjects.splice(index, 1);
+    stage.removeChild(stage.getChildAt(index * 3 + 1));
+    stage.removeChild(stage.getChildAt(index * 3 + 1));
+    stage.removeChild(stage.getChildAt(index * 3 + 1));
+    testMapLetters.splice(index, 1);
+    testMapTiming.splice(index, 1);
+    testMapObjects.splice(index, 1);
 }
+
+function explode(index){
+    var explodeOnHit = new createjs.Sprite(explosionSheet, explode);
+    explodeOnHit.alpha = .5;
+    explodeOnHit.x = testMapObjects[index].x - 20;
+    explodeOnHit.y = testMapObjects[index].y - 20;
+    container.addChild(explodeOnHit);
+    setTimeout(function(){container.removeChild(explodeOnHit);}, 416);
+}
+
+function restart() {
+    resetMap();
+    stage.clear();
+    stage = null;
+	createjs.Ticker.reset();
+	init();
+	graded = false;
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick", handleTick);
+	//calling the code twice fixed a pause bug
+    resetMap();
+    stage.clear();
+    stage = null;
+	createjs.Ticker.reset();
+	init();
+	graded = false;
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener("tick", handleTick);
+}
+
+function colorful(){
+	color = !color;
+}
+	
+	
+	
