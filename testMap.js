@@ -37,7 +37,7 @@
                         
         this.textObjects = [];
         
-        for(var i = 0; i < this.lettersXY.length; i++;){
+        for(var i = 0; i < this.lettersXY.length; i++){
             var letter = new createjs.Text(testMapLetters[0], "20px Arial", "#000000");
             letter.x = this.lettersXY[i[0]]; letter.y = this.lettersXY[i[1]]; letter.alpha = .1; letter.visible = false;
             
