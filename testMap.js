@@ -1,9 +1,10 @@
 (function(){
     function TestMap() {
         
-        this.song = document.getElementById("mapTrack");
+        this.song = document.getElementById("testMapTrack");
+		this.songDuration = this.song.getElementById("mapTrack").duration * 60; //value in ticks
         this.totalLetters = 51;
-        this.currentLetter = 0;
+        this.currentLetterIndex = 0;
         
         this.letters = ["t", "y", "p", "e", "r", 
 						"a", "s", "d", "f",

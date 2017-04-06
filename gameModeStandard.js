@@ -1,5 +1,22 @@
 
+var standardHighScore = 0;
+	
 function launchStandardMode(map) {
+	
+	var song = map.song;
+	var mapContainer = new createjs.Container();
+	
+	//start song
+	song.load();
+	song.play();
+	song.volume = 0.5;
+	
+	
+}
+	//
+	//
+	//
+	
     currentIndex = 0;
     score = 0;
     maxScore = 0;
@@ -13,47 +30,17 @@ function launchStandardMode(map) {
     stage = new createjs.Stage("canvas");
     container = new createjs.Container();
 
-    //Sound
-	document.getElementById("mapTrack").load();
-    document.getElementById("mapTrack").play();
-    document.getElementById("mapTrack").volume = .5;
+    // //Sound
+	// document.getElementById("mapTrack").load();
+    // document.getElementById("mapTrack").play();
+    // document.getElementById("mapTrack").volume = .5;
 
     // Ticker
     
-    // Score
-    scoreDisplay = new createjs.Text("Score: " + score, "20px Arial", "#000000");
-	scoreDisplay.x = 5;
-	scoreDisplay.y = 335;
-	container.addChildAt(scoreDisplay, 0);
 	
-	//Percentage till completion
-	progressDisplay = new createjs.Text("Progress:" + progress + "%", "16px Arial", "red");
-	progressDisplay.textAlign = "right";
-	progressDisplay.x = 635;
-	progressDisplay.y = 5;
-	container.addChildAt(progressDisplay, 1);
 
-    //Accuracy
-    accuracyDisplay = new createjs.Text("Accuracy: 0%", "16px Arial", "red");
-	accuracyDisplay.textAlign = "right";
-	accuracyDisplay.x = 635;
-	accuracyDisplay.y = 25;
-	container.addChildAt(accuracyDisplay, 2);
 
-    //High Score
-	highScoreDisplay = new createjs.Text("High Score: " + highScore.toFixed(0), "20px Arial", "#000000");
-	highScoreDisplay.x = 225;
-	highScoreDisplay.y = 335;
-	container.addChildAt(highScoreDisplay, 3);
 
-    //multiplier
-	multDisplay = new createjs.Text("Multiplier: " + multiplier.toFixed(1), "20px Arial", "#000000");
-	multDisplay.textAlign = "right";
-	multDisplay.x = 600;
-	multDisplay.y = 335;
-	container.addChildAt(multDisplay, 4);
-    
-    stage.addChild(container);
 	
     // Circles
     var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
@@ -86,7 +73,6 @@ function launchStandardMode(map) {
 
 	graded = false;
 	keyInput();
-}
 
 
 //Removes letter from arrays after its time is up
