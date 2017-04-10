@@ -125,4 +125,4 @@ function standardDisplay(){
             // originalLettersLength--;
         }
     }
-
+}

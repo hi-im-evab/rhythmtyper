@@ -5,7 +5,7 @@ var testMap;
 var selectedMap;
 var multiplierValue = 0.1;
 var currentMultiplier = 1; //set to 1 initially
-var score = new Score();
+var score;
 
 //maps
 var selectedMap;
@@ -41,6 +41,7 @@ function init(){
 	//temp until menus
     selectedMapString = 'testMap';
     selectMap(selectedMapString);
+    score = new Score(selectedMap)
 	launchStandardMode(selectedMap);
     
 }
