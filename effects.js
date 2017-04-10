@@ -18,6 +18,6 @@ function explode(index){
 }
 
 function colorful(){
-	color = !color;
+    
 }
 	

@@ -90,72 +90,74 @@ function keyInput(){
 
 // Check if input matches next letter
 // MOST OF SCORE IS IN HERE
+
+
 function checkInput(key){
-    for(var y = 0; y < 3; y++){
-    if (key == testMapLetters[y]){
-            var doBreak = false;
-		//update score
-        //will be based on timing in ticks
-            if (ticks + 60 > (testMapTiming[y]) * 60
-				&& ticks + 35 <= (testMapTiming[y]) * 60) {
-                    score += 50 * multiplier;
-                    multiplier += 0.1;
-					maxScore += 300 * (1 + 0.1 * currentIndex);
-					currentIndex += 1;
-                    explode(y);
-                    removeLetter(y);
-                    doBreak = true;
-                } else if(ticks + 35 > (testMapTiming[y]) * 60
-				&& ticks + 10 <= (testMapTiming[y]) * 60){
-                    score += 100 * multiplier;
-                    multiplier += 0.1;
-					maxScore += 300 * (1 + 0.1 * currentIndex);
-					currentIndex += 1;
-                    explode(y);
-                    removeLetter(y);
-                    doBreak = true;
-				} else if(ticks + 10 > (testMapTiming[y]) * 60
-				&& ticks - 5 <= (testMapTiming[y]) * 60){
-				    score += 300 * multiplier;
-				    multiplier += 0.1;
-					maxScore += 300 * (1 + 0.1 * currentIndex);
-					currentIndex += 1;
-                    explode(y);
-                    removeLetter(y);
-                    doBreak = true;
-				} else if(ticks > (testMapTiming[y]) * 60 - 5
-				&& ticks - 20 <= (testMapTiming[y]) * 60){
-				    score += 50 * multiplier;
-				    multiplier += 0.1;
-					maxScore += 300 * (1 + 0.1 * currentIndex);
-					currentIndex += 1;
-                    explode(y);
-                    removeLetter(y);
-                    doBreak = true;
-				}
+    // for(var y = 0; y < 3; y++){
+    // if (key == testMapLetters[y]){
+            // var doBreak = false;
+		// //update score
+        // //will be based on timing in ticks
+            // if (ticks + 60 > (testMapTiming[y]) * 60
+				// && ticks + 35 <= (testMapTiming[y]) * 60) {
+                    // score += 50 * multiplier;
+                    // multiplier += 0.1;
+					// maxScore += 300 * (1 + 0.1 * currentIndex);
+					// currentIndex += 1;
+                    // explode(y);
+                    // removeLetter(y);
+                    // doBreak = true;
+                // } else if(ticks + 35 > (testMapTiming[y]) * 60
+				// && ticks + 10 <= (testMapTiming[y]) * 60){
+                    // score += 100 * multiplier;
+                    // multiplier += 0.1;
+					// maxScore += 300 * (1 + 0.1 * currentIndex);
+					// currentIndex += 1;
+                    // explode(y);
+                    // removeLetter(y);
+                    // doBreak = true;
+				// } else if(ticks + 10 > (testMapTiming[y]) * 60
+				// && ticks - 5 <= (testMapTiming[y]) * 60){
+				    // score += 300 * multiplier;
+				    // multiplier += 0.1;
+					// maxScore += 300 * (1 + 0.1 * currentIndex);
+					// currentIndex += 1;
+                    // explode(y);
+                    // removeLetter(y);
+                    // doBreak = true;
+				// } else if(ticks > (testMapTiming[y]) * 60 - 5
+				// && ticks - 20 <= (testMapTiming[y]) * 60){
+				    // score += 50 * multiplier;
+				    // multiplier += 0.1;
+					// maxScore += 300 * (1 + 0.1 * currentIndex);
+					// currentIndex += 1;
+                    // explode(y);
+                    // removeLetter(y);
+                    // doBreak = true;
+				// }
 
-			container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
-            container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
-			container.getChildAt(0).text="Score: " + score.toFixed(0);
-            if(doBreak){
-                break;
-            }
-		}
-		else if (key == "esc") {
-			var audio = document.getElementById("mapTrack");
-			var timeAtPause = audio.currentTime;
-			var progressAtPause = container.getChildAt(1).text;
-		    if (createjs.Ticker.paused == false) {
-		        createjs.Ticker.paused = true;
-				container.getChildAt(1).text = "Paused";
-		        audio.pause();
-		    } else {
-		        createjs.Ticker.paused = false;
-		        audio.play();
-				container.getChildAt(1).text = progressAtPause;
-		    }
-		}
+			// container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
+            // container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
+			// container.getChildAt(0).text="Score: " + score.toFixed(0);
+            // if(doBreak){
+                // break;
+            // }
+		// }
+		// else if (key == "esc") {
+			// var audio = document.getElementById("mapTrack");
+			// var timeAtPause = audio.currentTime;
+			// var progressAtPause = container.getChildAt(1).text;
+		    // if (createjs.Ticker.paused == false) {
+		        // createjs.Ticker.paused = true;
+				// container.getChildAt(1).text = "Paused";
+		        // audio.pause();
+		    // } else {
+		        // createjs.Ticker.paused = false;
+		        // audio.play();
+				// container.getChildAt(1).text = progressAtPause;
+		    // }
+		// }
 
-		stage.update();
-    }
+		// stage.update();
+    // }
 }

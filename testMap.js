@@ -2,7 +2,7 @@
     function TestMap() {
         
         this.song = document.getElementById("testMapTrack");
-		this.songDuration = this.song.getElementById("mapTrack").duration * 60; //value in ticks
+		this.songDuration = this.song.duration * 60; //value in ticks
         this.totalLetters = 51;
         this.currentLetterIndex = 0;
         
@@ -36,13 +36,16 @@
                         [40,40],[70,70],[100,100],[130,130],[160,160],[190,190],[220,220],[250,250],[280,280],[310,310],
                         [350,310]];
                         
-        this.textObjects = [];
+        this.textObjects = [];//the createjs.Text objects for the letters
+        
+        this.objects = [];
         
         for(var i = 0; i < this.lettersXY.length; i++){
-            var letter = new createjs.Text(testMapLetters[0], "20px Arial", "#000000");
+            var letter = new createjs.Text(this.letters[0], "20px Arial", "#000000");
             letter.x = this.lettersXY[i[0]]; letter.y = this.lettersXY[i[1]]; letter.alpha = .1; letter.visible = false;
             
             this.textObjects[i] = letter;
+            this.objects[i] = [this.letters[i], this.timing[i], this.textObjects[i]];
         }       
     }
 
