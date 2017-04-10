@@ -45,13 +45,19 @@
 		//methods
 		
 		//updates score, progress, accuracy, and high score display
-		this.updateScore = function(){//CHECK LATER
+		this.updateScore = function(){
 								var maxScore = 0;
 								for(var i = 0; i < map.currentLetterIndex; i++){
-									maxScore += 300 * (1 + multiplier * map.currentLetterIndex);
+									maxScore += 300 * (1 + multiplierValue * map.currentLetterIndex);
 								}
 								this.scoreDisplay.text = ("Score: " + this.score);
-								this.progressDisplay.text = ("Progress:" + ((ticks / map.songDuration) * 100 * 2).toFixed(1) + "%");
+                                if(this.progress < 100){
+                                    this.progress = ((ticks / map.songDuration) * 100).toFixed(1);
+                                    this.progressDisplay.text = ("Progress:" + this.progress + "%");
+                                }
+                                else{
+                                    this.progressDisplay.text = ("Progress: 100.0%");
+                                }
 								this.accuracyDisplay.text = ("Accuracy: " + ((this.score/maxScore * 100).toFixed(2) + "%"));
 								this.highScoreDisplay.text = ("High Score: " + standardHighScore.toFixed(0));
 								this.multDisplay.text = ("Multiplier: " + currentMultiplier.toFixed(1));

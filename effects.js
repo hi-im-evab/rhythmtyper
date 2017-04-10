@@ -1,3 +1,8 @@
+
+var color = false;
+var colors = [new createjs.ColorFilter(0,0,0,1,0,255,0, 0), new createjs.ColorFilter(0,0,0,1,255,0,0, 0), new createjs.ColorFilter(0,0,0,1,0,0,255, 0)];
+var colorIt = 0;
+
 var explosion = {
     framerate: 60,
     images:["assets/explosion.png"],
@@ -18,6 +23,6 @@ function explode(index){
 }
 
 function colorful(){
-    
+	color = !color;
 }
 	

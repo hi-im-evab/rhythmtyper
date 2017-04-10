@@ -38,15 +38,26 @@
                         
         this.textObjects = [];//the createjs.Text objects for the letters
         
-        this.objects = [];
+        //this.objects = [];
         
         for(var i = 0; i < this.lettersXY.length; i++){
-            var letter = new createjs.Text(this.letters[0], "20px Arial", "#000000");
-            letter.x = this.lettersXY[i[0]]; letter.y = this.lettersXY[i[1]]; letter.alpha = .1; letter.visible = false;
+            var letter = new createjs.Text(this.letters[i], "20px Arial", "#000000");
+            letter.x = this.lettersXY[i][0]; letter.y = this.lettersXY[i][1]; letter.alpha = .1; letter.visible = true;
             
             this.textObjects[i] = letter;
-            this.objects[i] = [this.letters[i], this.timing[i], this.textObjects[i]];
-        }       
+            //this.objects[i] = [this.letters[i], this.timing[i], this.textObjects[i]];
+        }
+        this.resetMap = function(){
+                            currentLetterIndex = 0;
+                            this.textObjects = [];
+                            for(var i = 0; i < this.lettersXY.length; i++){
+                                var letter = new createjs.Text(this.letters[i], "20px Arial", "#000000");
+                                letter.x = this.lettersXY[i][0]; letter.y = this.lettersXY[i][1]; letter.alpha = .1; letter.visible = true;
+            
+                                this.textObjects[i] = letter;
+                                //this.objects[i] = [this.letters[i], this.timing[i], this.textObjects[i]];
+                            }
+                        }
     }
 
 window.TestMap = TestMap;

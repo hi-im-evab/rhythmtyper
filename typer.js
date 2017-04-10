@@ -9,8 +9,8 @@ var score = new Score();
 
 //maps
 var selectedMap;
+var selectedMapString;
 
-var testMap;
 
 //score stuff
 var multiplierValue = 0.1;
@@ -30,7 +30,6 @@ function load() {
     keyInput();
     
     //initialize maps
-    testMap = new TestMap();
     
     //init
 	init();
@@ -40,7 +39,8 @@ function load() {
 function init(){
 	
 	//temp until menus
-	selectedMap = testMap;
+    selectedMapString = 'testMap';
+    selectMap(selectedMapString);
 	launchStandardMode(selectedMap);
     
 }
@@ -51,13 +51,23 @@ function handleStandardTick(event){
         
         //update things
 		score.updateScore();
-		displayStandard();
+		standardDisplay();
 		
         stage.update();
     }
 }
 
 function restart(){
+    createjs.Ticker.reset();
+    selectMap(selectedMapString);
     stage.removeAllChildren();
 	launchStandardMode(selectedMap);
 }
+
+function selectMap(choice){
+    if(choice === 'testMap'){
+        selectedMap = new TestMap;
+    }
+}
+
+

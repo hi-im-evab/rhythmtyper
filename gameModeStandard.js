@@ -1,47 +1,88 @@
 
 var standardHighScore = 0;
-	
-function launchStandardMode(map) {
 
-    //reset stage?
-    
-    stage.removeAllChildren();
+// Circles to clone
+var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
+apprCircle = new createjs.Shape(g);
+apprCircle.visible = true;
+
+g = new createjs.Graphics().beginFill("#ff5e5e").drawCircle(0,0,20);
+backCircle = new createjs.Shape(g);
+backCircle.visible = true;
+
+var standardMapObjects;
+
+function launchStandardMode(map) {
+    //reset stuff?
+    standardMapObjects = new createjs.Container();
+    map.resetMap();
+    //stage.removeAllChildren();
+    //createjs.Ticker.reset();
     ticks = 0;
     
+    
+    for(var i = 0; i < map.totalLetters; i++){
+        //array containing the text object and circles for the letter
+        var gameObject = new createjs.Container();
+        
+        //mapTextObject is the letter's displayable object
+        var mapTextObject = map.textObjects[i];
+        
+        //make the circles
+        var backCircleClone = backCircle.clone();
+        backCircleClone.x = map.lettersXY[i][0] + mapTextObject.getMeasuredWidth()/2;
+        backCircleClone.y = map.lettersXY[i][1] + mapTextObject.getMeasuredHeight()/2;
+		backCircleClone.cache(-22, -22,  44, 44);
+        
+        var apprCircleClone = apprCircle.clone();
+        apprCircleClone.x = map.lettersXY[i][0] + mapTextObject.getMeasuredWidth()/2;
+        apprCircleClone.y = map.lettersXY[i][1] + mapTextObject.getMeasuredHeight()/2;
+		apprCircleClone.cache(-72, -72,  144, 144);
+        
+        //add circles and text object to container
+        gameObject.addChild(backCircleClone);
+        gameObject.addChild(apprCircleClone);
+        gameObject.addChild(mapTextObject);
+        gameObject.visible = false;
+        
+        //add gameObject container to standardMapObjects
+        standardMapObjects.addChild(gameObject);
+    }
+    stage.addChild(standardMapObjects);
     //score stuff
     score = new Score(map);
     stage.addChild(score.scoreContainer);
     
 	var song = map.song;
-	var mapContainer = new createjs.Container();
-	
     
-    //ticker
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", handleStandardTick);
-
 	//start song
 	song.load();
 	song.play();
 	song.volume = 0.5;
+    
+    //ticker
+    createjs.Ticker.framerate = 60;
+    createjs.Ticker.addEventListener("tick", handleStandardTick);
+    
 	
 	
 }
 
 
 function standardDisplay(){
-    var firstLetter = selectedMap.currentLetterIndex
-    for (var j = firstLetter; j < firstLetter + 3; j++) {
+    var currentLetter = selectedMap.currentLetterIndex;
+    for (var j = currentLetter; j < selectedMap.totalLetters; j++) {
+        var currentObject = standardMapObjects.getChildAt(j);
+        
+        var tempBackCircle =currentObject.getChildAt(0);//Background Circle
+        var tempApprCircle = currentObject.getChildAt(1);//Approach Circle
+        var tempLetter = currentObject.getChildAt(2); //Letter
+        
         //Before hit
         if(ticks >= ((selectedMap.timing[j]-secToHit)*60) &&
         ticks <= (selectedMap.timing[j]*60)){
-            stage.getChildAt((j*3)+2).visible = true; //Letter
-			
-            var tempBackCircle =stage.getChildAt((j*3)+1); //Background Circle
-            tempBackCircle.visible = true;
-			
-            var tempApprCircle = stage.getChildAt((j*3)+3);//Approach Circle
-            tempApprCircle.visible = true;
+            standardMapObjects.getChildAt(j).visible = true; //Letter
+			 
             tempApprCircle.alpha = 0.5;
 			if(color == true && colorIt >= 10){
 				tempBackCircle.filters = [colors[0]];
@@ -64,28 +105,24 @@ function standardDisplay(){
             tempApprCircle.scaleX -= 0.005952;
             tempApprCircle.scaleY -= 0.005952;
 
-            testMapObjects[j].alpha += .0075;
+            tempLetter.alpha += .0075;
 			
 		}
 		//making not visible at end of its time
-        else if(ticks >= (testMapTiming[j]) * 60 &&
-            ticks <= (testMapTiming[j] + secToLateHit) * 60 - 0){
-            stage.getChildAt((j * 3) + 1).visible = false; //Background Circle
-            stage.getChildAt((j * 3) + 2).visible = false; //Letter
-            tempApprCircle = stage.getChildAt((j * 3) + 3)//Approach Circle
-            tempApprCircle.visible = false;
+        else if(ticks >= (selectedMap.timing[j]) * 60 &&
+            ticks <= (selectedMap.timing[j] + secToLateHit) * 60 - 0){
+            standardMapObjects.getChildAt(j).visible = false;
         }
 
         //Miss
-        else if (ticks >= (testMapTiming[j] + secToLateHit) * 60 - 0){
-            removeLetter(j);
-            multiplier = 1;
-			maxScore += 300 * (1 + 0.1 * currentIndex);
-			currentIndex += 1;
-            container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
-			container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
-            j--;
-            originalLettersLength--;
+        else if (ticks >= (selectedMap.timing[j] + secToLateHit) * 60 - 0){
+            //removeLetter(j);
+            currentMultiplier = 1;
+			selectedMap.currentLetterIndex += 1;
+            // container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
+			// container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
+            // j--;
+            // originalLettersLength--;
         }
     }
 
