@@ -1,9 +1,8 @@
 (function(){
-    function TestMap() {
+    function Song1() {
         
-        this.song = document.getElementById("testMapTrack");
+        this.song = document.getElementById("song1Track");
 		this.songDuration = this.song.duration * 60; //value in ticks
-        this.totalLetters = 51;
         this.currentLetterIndex = 0;
         
         this.letters = ["t", "y", "p", "e", "r", 
@@ -15,6 +14,8 @@
 						"s", "w", "e", "a", "t", "e", "r", "s",
 						"y", "o", "t", "h", "a", "n", "k", "y", "o", "u",
 						"q"];
+                        
+        this.totalLetters = this.letters.length; //51
                         
         this.timing = [2, 2.5, 3, 3.25, 3.5, 
 						4, 4.5, 5, 5.5,
@@ -38,14 +39,12 @@
                         
         this.textObjects = [];//the createjs.Text objects for the letters
         
-        //this.objects = [];
         
         for(var i = 0; i < this.lettersXY.length; i++){
             var letter = new createjs.Text(this.letters[i], "20px Arial", "#000000");
             letter.x = this.lettersXY[i][0]; letter.y = this.lettersXY[i][1]; letter.alpha = .1; letter.visible = true;
             
             this.textObjects[i] = letter;
-            //this.objects[i] = [this.letters[i], this.timing[i], this.textObjects[i]];
         }
         this.resetMap = function(){
                             currentLetterIndex = 0;
@@ -55,10 +54,9 @@
                                 letter.x = this.lettersXY[i][0]; letter.y = this.lettersXY[i][1]; letter.alpha = .1; letter.visible = true;
             
                                 this.textObjects[i] = letter;
-                                //this.objects[i] = [this.letters[i], this.timing[i], this.textObjects[i]];
                             }
                         }
     }
 
-window.TestMap = TestMap;
+window.Song1 = Song1;
 }());

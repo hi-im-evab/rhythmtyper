@@ -3,7 +3,9 @@
   <title>Rhythm Typer</title>
   <script type="text/javascript" src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
   <script src="http://code.createjs.com/soundjs-0.5.2.min.js"></script>
-  <script type="text/javascript" src="testMap.js"></script> 
+  <script type="text/javascript" src="song1.js"></script> 
+  <script type="text/javascript" src="song2.js"></script>
+  <script type="text/javascript" src="menus.js"></script>
   <script type="text/javascript" src="typer.js"></script> 
   <script type="text/javascript" src="effects.js"></script> 
   <script type="text/javascript" src="gameModeStandard.js"></script> 
@@ -12,10 +14,11 @@
 </head>
 <body onload="load()">
   <canvas id="canvas" style="background-color:#D3D3D3" width="640" height="360" style="border: black solid 1px"></canvas>
-  <audio id="testMapTrack" src="assets/mapTrack.mp3"></audio>
+  <audio id="song2Track" src="assets/song2Track.mp3"></audio>
+  <audio id="song1Track" src="assets/song1Track.mp3"></audio>
   <div>
-      <button onclick="restart()">Restart</button>
-      <button onclick="colorful()">Colorful</button>
+      <button onclick="faster()">Faster</button>
+      <button onclick="slower()">Slower</button>
   </div>
 </body>
 </html>

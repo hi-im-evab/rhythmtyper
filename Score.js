@@ -31,7 +31,7 @@
 		//highScoreDisplay
 		this.highScoreDisplay = new createjs.Text("High Score: " + standardHighScore.toFixed(0), "20px Arial", "#000000");
 		this.highScoreDisplay.textAlign = "center";
-		this.highScoreDisplay.x = 225;
+		this.highScoreDisplay.x = 275;
 		this.highScoreDisplay.y = 335;
 		this.scoreContainer.addChild(this.highScoreDisplay);
 		
@@ -42,15 +42,16 @@
 		this.multDisplay.y = 335;
 		this.scoreContainer.addChild(this.multDisplay);
 		
-		//methods
-		
-		//updates score, progress, accuracy, and high score display
+		//updates score, progress, accuracy, multiplier, and high score display
 		this.updateScore = function(){
+                                if(this.score > standardHighScore){
+                                    standardHighScore = this.score;
+                                }
 								var maxScore = 0;
 								for(var i = 0; i < map.currentLetterIndex; i++){
-									maxScore += 300 * (1 + multiplierValue * map.currentLetterIndex);
+									maxScore += 300 * (1 + (multiplierValue * i));
 								}
-								this.scoreDisplay.text = ("Score: " + this.score);
+								this.scoreDisplay.text = ("Score: " + this.score.toFixed(0));
                                 if(this.progress < 100){
                                     this.progress = ((ticks / map.songDuration) * 100).toFixed(1);
                                     this.progressDisplay.text = ("Progress:" + this.progress + "%");
@@ -58,10 +59,19 @@
                                 else{
                                     this.progressDisplay.text = ("Progress: 100.0%");
                                 }
-								this.accuracyDisplay.text = ("Accuracy: " + ((this.score/maxScore * 100).toFixed(2) + "%"));
+                                var accuracy = (this.score/maxScore * 100).toFixed(2);
+                                if(maxScore != 0){
+                                    this.accuracyDisplay.text = ("Accuracy: " + ((accuracy + "%")));
+                                }
+                                else{
+                                    this.accuracyDisplay.text = ("Accuracy: " + (("100.0%")));
+                                }
 								this.highScoreDisplay.text = ("High Score: " + standardHighScore.toFixed(0));
 								this.multDisplay.text = ("Multiplier: " + currentMultiplier.toFixed(1));
 							}
+        this.addScore = function(value){
+                                this.score += value;
+                        }
 	}
 	
 	window.Score = Score;

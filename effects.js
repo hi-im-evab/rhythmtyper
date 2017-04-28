@@ -25,4 +25,17 @@ function explode(index){
 function colorful(){
 	color = !color;
 }
-	
+
+function faster(){
+    selectedMap.song.playbackRate += 0.1;
+    circleScale = 0.005952 * selectedMap.song.playbackRate;
+    ticksScale =  1 * selectedMap.song.playbackRate;
+    multiplierValue = 0.1 * selectedMap.song.playbackRate;
+}
+
+function slower(){
+    selectedMap.song.playbackRate -= 0.1;
+    circleScale = 0.005952 * selectedMap.song.playbackRate;
+    ticksScale =  1 * selectedMap.song.playbackRate;
+    multiplierValue = 0.1 * selectedMap.song.playbackRate;
+}

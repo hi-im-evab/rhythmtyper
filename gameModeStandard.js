@@ -14,10 +14,11 @@ var standardMapObjects;
 
 function launchStandardMode(map) {
     //reset stuff?
+    createjs.Ticker.paused = false;
     standardMapObjects = new createjs.Container();
     map.resetMap();
-    //stage.removeAllChildren();
-    //createjs.Ticker.reset();
+    resetMenu();
+    score = new Score(map);
     ticks = 0;
     
     
@@ -44,6 +45,8 @@ function launchStandardMode(map) {
         gameObject.addChild(apprCircleClone);
         gameObject.addChild(mapTextObject);
         gameObject.visible = false;
+        gameObject.timing = selectedMap.timing[i];
+        gameObject.letter = selectedMap.letters[i];
         
         //add gameObject container to standardMapObjects
         standardMapObjects.addChild(gameObject);
@@ -70,18 +73,19 @@ function launchStandardMode(map) {
 
 
 function standardDisplay(){
-    var currentLetter = selectedMap.currentLetterIndex;
-    for (var j = currentLetter; j < selectedMap.totalLetters; j++) {
+    for (var j = 0; j < standardMapObjects.numChildren; j++) {
+        
         var currentObject = standardMapObjects.getChildAt(j);
+        var currentTiming = currentObject.timing;
         
         var tempBackCircle =currentObject.getChildAt(0);//Background Circle
         var tempApprCircle = currentObject.getChildAt(1);//Approach Circle
         var tempLetter = currentObject.getChildAt(2); //Letter
         
         //Before hit
-        if(ticks >= ((selectedMap.timing[j]-secToHit)*60) &&
-        ticks <= (selectedMap.timing[j]*60)){
-            standardMapObjects.getChildAt(j).visible = true; //Letter
+        if(ticks >= ((currentTiming-secToHit)*60) &&
+        ticks <= (currentTiming*60)){
+            currentObject.visible = true; //Letter
 			 
             tempApprCircle.alpha = 0.5;
 			if(color == true && colorIt >= 10){
@@ -102,27 +106,26 @@ function standardDisplay(){
 				colorIt++;
 			}
             //makes circle approach to enclose back circle
-            tempApprCircle.scaleX -= 0.005952;
-            tempApprCircle.scaleY -= 0.005952;
+            tempApprCircle.scaleX -= circleScale;
+            tempApprCircle.scaleY -= circleScale;
 
             tempLetter.alpha += .0075;
 			
 		}
 		//making not visible at end of its time
-        else if(ticks >= (selectedMap.timing[j]) * 60 &&
-            ticks <= (selectedMap.timing[j] + secToLateHit) * 60 - 0){
+        else if(ticks >= (currentTiming) * 60 &&
+            ticks <= (currentTiming + secToLateHit) * 60 - 0){
             standardMapObjects.getChildAt(j).visible = false;
         }
 
         //Miss
-        else if (ticks >= (selectedMap.timing[j] + secToLateHit) * 60 - 0){
-            //removeLetter(j);
-            currentMultiplier = 1;
-			selectedMap.currentLetterIndex += 1;
-            // container.getChildAt(4).text = "Multiplier: " + multiplier.toFixed(1);
-			// container.getChildAt(2).text = ("Accuracy: " + ((score/maxScore) * 100).toFixed(2) + "%");
-            // j--;
-            // originalLettersLength--;
+        else if (ticks >= (currentTiming + secToLateHit) * 60 - 0){
+            // currentMultiplier = 1;
+            // score.updateScore();
+			// selectedMap.currentLetterIndex += 1;
+            // standardMapObjects.removeChildAt(j);
+            
+				    letterHit(300, 0);
         }
     }
 }

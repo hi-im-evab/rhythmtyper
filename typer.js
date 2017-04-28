@@ -1,11 +1,11 @@
+//fun Stuff
+var circleScale = 0.005952;
+var ticksScale = 1;
+
 //general game stuff
 var stage;
+var currentMenu;
 var ticks;
-var testMap;
-var selectedMap;
-var multiplierValue = 0.1;
-var currentMultiplier = 1; //set to 1 initially
-var score;
 
 //maps
 var selectedMap;
@@ -29,8 +29,6 @@ function load() {
     //init methods
     keyInput();
     
-    //initialize maps
-    
     //init
 	init();
 	
@@ -38,17 +36,13 @@ function load() {
 
 function init(){
 	
-	//temp until menus
-    selectedMapString = 'testMap';
-    selectMap(selectedMapString);
-    score = new Score(selectedMap)
-	launchStandardMode(selectedMap);
-    
+    mainMenu();
 }
 
 function handleStandardTick(event){
     if(!event.paused){
-        ticks += 1;
+        //increment ticks for timing
+        ticks += ticksScale;
         
         //update things
 		score.updateScore();
@@ -60,14 +54,19 @@ function handleStandardTick(event){
 
 function restart(){
     createjs.Ticker.reset();
+    createjs.Ticker.paused = false;
+    currentMultiplier = 1;
     selectMap(selectedMapString);
     stage.removeAllChildren();
 	launchStandardMode(selectedMap);
 }
 
 function selectMap(choice){
-    if(choice === 'testMap'){
-        selectedMap = new TestMap;
+    if(choice === 'song1'){
+        selectedMap = new Song1;
+    }
+    if (choice === 'song2') {
+        selectedMap = new Song2;
     }
 }
 
