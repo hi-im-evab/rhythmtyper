@@ -22,7 +22,7 @@ function pauseMenu(){
             resetMenu();
             
             currentMenu.addChild(menuRectangle('Resume', 70, pauseMenu));
-            currentMenu.addChild(menuRectangle('Restart', 120, restart));
+            currentMenu.addChild(menuRectangle('Restart', 120, standardRestart));
             currentMenu.addChild(menuRectangle('Colorful', 170, colorful));
             currentMenu.addChild(menuRectangle('Main Menu', 220, mainMenu));
             stage.addChild(currentMenu);
@@ -32,6 +32,7 @@ function pauseMenu(){
 }
 function mainMenu(){
     resetMenu();
+    resetEffects();
     //reset things in case leaving a game
     createjs.Ticker.reset();
     createjs.Ticker.paused = true;
@@ -87,12 +88,24 @@ function menuRectangle(text1, Y, method){
     
     return menuRect;
 }
+
+function selectMap(choice){
+    if(choice === 'song1'){
+        selectedMap = new Song1;
+    }
+    if (choice === 'song2') {
+        selectedMap = new Song2;
+    }
+}
+
 function resetMenu(){
         stage.removeChild(currentMenu);
         currentMenu = new createjs.Container();
         currentMenu.addChild(menuBackground);
         stage.update();
 }
+
+//a filler method for the other game mode menu button
 function fill(){
     
 }

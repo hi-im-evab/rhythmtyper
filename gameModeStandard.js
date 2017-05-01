@@ -1,4 +1,9 @@
 
+//hit stuffs
+var secToHit = 2;
+var secToLateHit = 0.25;
+
+
 var standardHighScore = 0;
 
 // Circles to clone
@@ -10,16 +15,20 @@ g = new createjs.Graphics().beginFill("#ff5e5e").drawCircle(0,0,20);
 backCircle = new createjs.Shape(g);
 backCircle.visible = true;
 
+
 var standardMapObjects;
 
 function launchStandardMode(map) {
-    //reset stuff?
+    //reset stuff needed for gamemode
     createjs.Ticker.paused = false;
     standardMapObjects = new createjs.Container();
     map.resetMap();
     resetMenu();
     score = new Score(map);
     ticks = 0;
+    currentMultiplier = 1;
+    currentMaxScore = 0;
+    speedDisplay.text = ("Speed: " + speed.toFixed(1));
     
     
     for(var i = 0; i < map.totalLetters; i++){
@@ -53,14 +62,15 @@ function launchStandardMode(map) {
     }
     stage.addChild(standardMapObjects);
     //score stuff
-    score = new Score(map);
     stage.addChild(score.scoreContainer);
+	stage.addChild(speedDisplay);
     
 	var song = map.song;
     
 	//start song
 	song.load();
 	song.play();
+    song.playbackRate = speed;
 	song.volume = 0.5;
     
     //ticker
@@ -117,15 +127,25 @@ function standardDisplay(){
             ticks <= (currentTiming + secToLateHit) * 60 - 0){
             standardMapObjects.getChildAt(j).visible = false;
         }
-
         //Miss
         else if (ticks >= (currentTiming + secToLateHit) * 60 - 0){
-            // currentMultiplier = 1;
-            // score.updateScore();
-			// selectedMap.currentLetterIndex += 1;
-            // standardMapObjects.removeChildAt(j);
+            score.updateMaxScore();
+            score.maxMultiplier += multiplierValue;
+            currentMultiplier = 1;
+            score.updateScore();
+			selectedMap.currentLetterIndex += 1;
+            standardMapObjects.removeChildAt(j);
             
-				    letterHit(300, 0);
+            // letterHit(300, 0);
         }
     }
+}
+
+
+function standardRestart(){
+    createjs.Ticker.reset();
+    createjs.Ticker.paused = false;
+    selectMap(selectedMapString);
+    stage.removeAllChildren();
+	launchStandardMode(selectedMap);
 }

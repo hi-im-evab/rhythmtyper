@@ -1,7 +1,9 @@
 
-// Keys A-Z and ESC
+//function to add event listeners for keys
 function keyInput(){
 	document.addEventListener('keydown', function(event){
+        
+        //LETTERS
 		if(event.keyCode == 65){
 			checkInput("a");
 		}
@@ -80,16 +82,23 @@ function keyInput(){
 		if(event.keyCode == 90){
 			checkInput("z");
 		}
+        
+        //NON LETTER KEYS
+        //pause
 		if(event.keyCode == 27){
 		    pauseMenu();
-			//no check input
-			//used for pause
+		}
+        //slow down
+		if(event.keyCode == 189 || event.keyCode == 109){
+			slower();
+		}
+        //speed up
+		if(event.keyCode == 187 || event.keyCode == 107){
+			faster();
 		}
 	});
 }
 
-// Check if input matches next letter
-// MOST OF SCORE IS IN HERE
 
 
 function checkInput(key){
@@ -126,12 +135,13 @@ function checkInput(key){
 
 //function for if a letter is hit, value is the point value for the time it is hit
 function letterHit(value, index){
-    
+                    score.updateMaxScore();
                     score.addScore(value * currentMultiplier);
                     score.updateScore();
+                    score.maxMultiplier += multiplierValue;
                     currentMultiplier += multiplierValue;
+                    explode(standardMapObjects.getChildAt(index));
                     standardMapObjects.removeChildAt(index);
                     selectedMap.currentLetterIndex += 1;
-                    //explode(y);
 }
 

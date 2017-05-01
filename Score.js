@@ -1,3 +1,7 @@
+
+var multiplierValue = 0.1;
+var currentMultiplier = 1; //set to 1 initially
+
 (function(){
 	
 	function Score(map){
@@ -42,16 +46,15 @@
 		this.multDisplay.y = 335;
 		this.scoreContainer.addChild(this.multDisplay);
 		
+        this.maxMultiplier = 1;
+        this.maxScore = 0;
 		//updates score, progress, accuracy, multiplier, and high score display
 		this.updateScore = function(){
                                 if(this.score > standardHighScore){
                                     standardHighScore = this.score;
                                 }
-								var maxScore = 0;
-								for(var i = 0; i < map.currentLetterIndex; i++){
-									maxScore += 300 * (1 + (multiplierValue * i));
-								}
 								this.scoreDisplay.text = ("Score: " + this.score.toFixed(0));
+                                
                                 if(this.progress < 100){
                                     this.progress = ((ticks / map.songDuration) * 100).toFixed(1);
                                     this.progressDisplay.text = ("Progress:" + this.progress + "%");
@@ -59,9 +62,9 @@
                                 else{
                                     this.progressDisplay.text = ("Progress: 100.0%");
                                 }
-                                var accuracy = (this.score/maxScore * 100).toFixed(2);
-                                if(maxScore != 0){
-                                    this.accuracyDisplay.text = ("Accuracy: " + ((accuracy + "%")));
+                                
+                                if(this.maxScore != 0){
+                                    this.accuracyDisplay.text = ("Accuracy: " + (((this.score/this.maxScore * 100).toFixed(2) + "%")));
                                 }
                                 else{
                                     this.accuracyDisplay.text = ("Accuracy: " + (("100.0%")));
@@ -69,6 +72,10 @@
 								this.highScoreDisplay.text = ("High Score: " + standardHighScore.toFixed(0));
 								this.multDisplay.text = ("Multiplier: " + currentMultiplier.toFixed(1));
 							}
+               
+        this.updateMaxScore = function(){
+                                    this.maxScore += 300 * (this.maxMultiplier);
+                            }
         this.addScore = function(value){
                                 this.score += value;
                         }
