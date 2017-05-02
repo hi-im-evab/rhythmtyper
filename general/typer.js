@@ -4,7 +4,7 @@
 var stage;
 var currentMenu;
 var ticks;
-var score
+var score;
 
 //maps
 var selectedMap;

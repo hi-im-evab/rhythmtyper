@@ -1,3 +1,5 @@
+var song1HighScore = 0;
+
 (function(){
     function Song1() {
         
@@ -56,6 +58,15 @@
                                 this.textObjects[i] = letter;
                             }
                         }
+                        
+        this.highScore = song1HighScore;
+        
+        this.setHighScore = function(score){
+                                if(score > this.highScore){
+                                    this.highScore = score;
+                                    song1HighScore = score;
+                                }
+        }
     }
 
 window.Song1 = Song1;

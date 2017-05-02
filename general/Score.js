@@ -33,7 +33,7 @@ var currentMultiplier = 1; //set to 1 initially
 		
 		
 		//highScoreDisplay
-		this.highScoreDisplay = new createjs.Text("High Score: " + standardHighScore.toFixed(0), "20px Arial", "#000000");
+		this.highScoreDisplay = new createjs.Text("High Score: " + selectedMap.highScore.toFixed(0), "20px Arial", "#000000");
 		this.highScoreDisplay.textAlign = "center";
 		this.highScoreDisplay.x = 275;
 		this.highScoreDisplay.y = 335;
@@ -50,9 +50,7 @@ var currentMultiplier = 1; //set to 1 initially
         this.maxScore = 0;
 		//updates score, progress, accuracy, multiplier, and high score display
 		this.updateScore = function(){
-                                if(this.score > standardHighScore){
-                                    standardHighScore = this.score;
-                                }
+                                selectedMap.setHighScore(this.score);
 								this.scoreDisplay.text = ("Score: " + this.score.toFixed(0));
                                 
                                 if(this.progress < 100){
@@ -69,7 +67,7 @@ var currentMultiplier = 1; //set to 1 initially
                                 else{
                                     this.accuracyDisplay.text = ("Accuracy: " + (("100.0%")));
                                 }
-								this.highScoreDisplay.text = ("High Score: " + standardHighScore.toFixed(0));
+								this.highScoreDisplay.text = ("High Score: " + selectedMap.highScore.toFixed(0));
 								this.multDisplay.text = ("Multiplier: " + currentMultiplier.toFixed(1));
 							}
                

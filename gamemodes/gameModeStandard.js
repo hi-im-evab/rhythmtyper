@@ -4,7 +4,6 @@ var secToHit = 2;
 var secToLateHit = 0.25;
 
 
-var standardHighScore = 0;
 
 // Circles to clone
 var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
@@ -76,6 +75,8 @@ function launchStandardMode(map) {
     //ticker
     createjs.Ticker.framerate = 60;
     createjs.Ticker.addEventListener("tick", handleStandardTick);
+    score.updateScore();
+    stage.update();
     
 	
 	
@@ -144,8 +145,17 @@ function standardDisplay(){
 
 function standardRestart(){
     createjs.Ticker.reset();
-    createjs.Ticker.paused = false;
     selectMap(selectedMapString);
     stage.removeAllChildren();
 	launchStandardMode(selectedMap);
+    selectedMap.song.pause();
+    createjs.Ticker.paused = true;
+    stage.update();
+    
+    setTimeout(function(){
+        if(inGame){
+            createjs.Ticker.paused = false;
+            selectedMap.song.play();
+        }
+    }, 3000);
 }

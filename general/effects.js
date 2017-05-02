@@ -55,6 +55,7 @@ function faster(){
     ticksScale =  1 * playback;
     multiplierValue = 0.1 * playback;
     speedDisplay.text = ("Speed: " + playback.toFixed(1));
+    stage.update();
 }
 
 function slower(){
@@ -68,6 +69,7 @@ function slower(){
         multiplierValue = 0.1 * playback;
         speed = playback;
 		speedDisplay.text = ("Speed: " + playback.toFixed(1));
+        stage.update();
     }
     else{
 		speedDisplay.text = ("Speed: 0.0");
@@ -77,6 +79,7 @@ function slower(){
         circleScale = 0;
         ticksScale =  0;
         multiplierValue = 0;
+        stage.update();
     }
 }
 
