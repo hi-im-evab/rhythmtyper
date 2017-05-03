@@ -1,6 +1,6 @@
 
-var multiplierValue = 0.1;
-var currentMultiplier = 1; //set to 1 initially
+var multiplierValue = 0.1;//how much the multiplier increases on successful hit
+var currentMultiplier = 1; //set to 1 initially, the multiplier that is used when adding to score
 
 (function(){
 	
@@ -24,7 +24,7 @@ var currentMultiplier = 1; //set to 1 initially
 		this.progressDisplay.y = 5;
 		this.scoreContainer.addChild(this.progressDisplay);
 		
-		//accuracyDisplay
+		//accuracyDisplay displays accuracy based on amount of points compared to total possible points
 		this.accuracyDisplay = new createjs.Text("Accuracy: 0%", "16px Arial", "red");
 		this.accuracyDisplay.textAlign = "right";
 		this.accuracyDisplay.x = 635;
@@ -46,8 +46,10 @@ var currentMultiplier = 1; //set to 1 initially
 		this.multDisplay.y = 335;
 		this.scoreContainer.addChild(this.multDisplay);
 		
+        //keeps track of max possible score for the accuracy display
         this.maxMultiplier = 1;
         this.maxScore = 0;
+        
 		//updates score, progress, accuracy, multiplier, and high score display
 		this.updateScore = function(){
                                 selectedMap.setHighScore(this.score);
@@ -70,10 +72,12 @@ var currentMultiplier = 1; //set to 1 initially
 								this.highScoreDisplay.text = ("High Score: " + selectedMap.highScore.toFixed(0));
 								this.multDisplay.text = ("Multiplier: " + currentMultiplier.toFixed(1));
 							}
-               
+                            
+        //updates the current maxScore
         this.updateMaxScore = function(){
                                     this.maxScore += 300 * (this.maxMultiplier);
                             }
+        //adds points to the current score
         this.addScore = function(value){
                                 this.score += value;
                         }

@@ -100,7 +100,7 @@ function keyInput(){
 }
 
 
-
+//method called by event listener to check if the key pressed was a hit or not, checks first 3 letters
 function checkInput(key){
     for(var y = 0; y < 3; y++){
         var currentObject = standardMapObjects.getChildAt(y);

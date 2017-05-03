@@ -7,11 +7,11 @@ var secToLateHit = 0.25;
 
 // Circles to clone
 var g = new createjs.Graphics().setStrokeStyle(3).beginStroke("red").drawCircle(0,0,70);
-apprCircle = new createjs.Shape(g);
+apprCircle = new createjs.Shape(g);//approach circle
 apprCircle.visible = true;
 
 g = new createjs.Graphics().beginFill("#ff5e5e").drawCircle(0,0,20);
-backCircle = new createjs.Shape(g);
+backCircle = new createjs.Shape(g);//background circle
 backCircle.visible = true;
 
 
@@ -60,6 +60,7 @@ function launchStandardMode(map) {
         standardMapObjects.addChild(gameObject);
     }
     stage.addChild(standardMapObjects);
+    
     //score stuff
     stage.addChild(score.scoreContainer);
 	stage.addChild(speedDisplay);
@@ -82,7 +83,7 @@ function launchStandardMode(map) {
 	
 }
 
-
+//updates what gameObjects need to be displayed
 function standardDisplay(){
     for (var j = 0; j < standardMapObjects.numChildren; j++) {
         
@@ -99,6 +100,7 @@ function standardDisplay(){
             currentObject.visible = true; //Letter
 			 
             tempApprCircle.alpha = 0.5;
+            //code to change colors
 			if(color == true && colorIt >= 10){
 				tempBackCircle.filters = [colors[0]];
 				tempBackCircle.updateCache();
@@ -120,15 +122,16 @@ function standardDisplay(){
             tempApprCircle.scaleX -= circleScale;
             tempApprCircle.scaleY -= circleScale;
 
+            //fades in the letter for aesthetics
             tempLetter.alpha += .0075;
 			
 		}
-		//making not visible at end of its time
+		//making object not visible at end of its display time
         else if(ticks >= (currentTiming) * 60 &&
             ticks <= (currentTiming + secToLateHit) * 60 - 0){
             standardMapObjects.getChildAt(j).visible = false;
         }
-        //Miss
+        //Miss, the object has reached its maximum hit time
         else if (ticks >= (currentTiming + secToLateHit) * 60 - 0){
             score.updateMaxScore();
             score.maxMultiplier += multiplierValue;
@@ -137,12 +140,26 @@ function standardDisplay(){
 			selectedMap.currentLetterIndex += 1;
             standardMapObjects.removeChildAt(j);
             
-            // letterHit(300, 0);
+            // letterHit(300, 0); //used to enable cheat mode for 100% by commenting the other code in this else
         }
     }
 }
 
+//ticker method for standard game mode
+function handleStandardTick(event){
+    if(!event.paused){
+        //increment ticks for timing
+        ticks += ticksScale;
+        
+        //update things
+		score.updateScore();
+		standardDisplay();
+		
+        stage.update();
+    }
+}
 
+//restarts the standard gamemode
 function standardRestart(){
     createjs.Ticker.reset();
     selectMap(selectedMapString);
@@ -152,6 +169,7 @@ function standardRestart(){
     createjs.Ticker.paused = true;
     stage.update();
     
+    //delay before song starts so people can get their hands on keyboard
     setTimeout(function(){
         if(inGame){
             createjs.Ticker.paused = false;

@@ -1,3 +1,4 @@
+//Any song can be added as long as it follows this format, all of it should be self explanatory
 var song2HighScore = 0;
 
 (function () {
@@ -74,12 +75,15 @@ var song2HighScore = 0;
 
         this.textObjects = [];//the createjs.Text objects for the letters
 
+        //adds text objects
         for (var i = 0; i < this.lettersXY.length; i++) {
             var letter = new createjs.Text(this.letters[i], "20px Arial", "#000000");
             letter.x = this.lettersXY[i][0]; letter.y = this.lettersXY[i][1]; letter.alpha = .1; letter.visible = true;
 
             this.textObjects[i] = letter;
         }
+        
+        //resets map
         this.resetMap = function () {
             currentLetterIndex = 0;
             this.textObjects = [];

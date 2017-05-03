@@ -25,21 +25,10 @@ function load() {
 }
 
 function init(){
+    //initial main menu screen
     mainMenu();
 }
 
-function handleStandardTick(event){
-    if(!event.paused){
-        //increment ticks for timing
-        ticks += ticksScale;
-        
-        //update things
-		score.updateScore();
-		standardDisplay();
-		
-        stage.update();
-    }
-}
 
 
 
